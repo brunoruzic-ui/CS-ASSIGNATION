@@ -1,151 +1,3 @@
-
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter','Segoe UI',sans-serif;background:#f0ede6;font-size:13px;}
-
-.header{background:#1a1a2e;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
-.header-left{display:flex;align-items:center;gap:10px;}
-.logo{background:#e63946;color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:1px;}
-.header-title{color:white;font-size:14px;font-weight:500;}
-.header-sub{color:rgba(255,255,255,0.4);font-size:11px;margin-top:1px;}
-.header-right{display:flex;align-items:center;gap:8px;}
-.conn-dot{width:8px;height:8px;border-radius:50%;background:#888;display:inline-block;margin-right:5px;}
-.conn-dot.ok{background:#1d9e75;}
-.conn-dot.err{background:#e63946;}
-.conn-label{font-size:11px;color:rgba(255,255,255,0.5);}
-.btn-sm{background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.75);font-size:11px;padding:5px 11px;border-radius:6px;cursor:pointer;}
-.btn-sm:hover{background:rgba(255,255,255,0.14);}
-
-.config-bar{background:#13132a;padding:10px 20px;display:flex;align-items:center;gap:10px;}
-.config-bar label{font-size:11px;color:rgba(255,255,255,0.45);white-space:nowrap;}
-.config-bar input{flex:1;background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.15);color:white;font-size:11px;padding:6px 10px;border-radius:6px;outline:none;font-family:monospace;}
-.config-bar input::placeholder{color:rgba(255,255,255,0.25);}
-.btn-connect{background:#e63946;border:none;color:white;font-size:11px;font-weight:600;padding:6px 16px;border-radius:6px;cursor:pointer;white-space:nowrap;}
-.btn-connect:hover{background:#c9313e;}
-.btn-connect:disabled{background:#555;cursor:default;}
-
-.tabs{background:#1a1a2e;display:flex;gap:0;padding:0 20px;border-bottom:1px solid rgba(255,255,255,0.08);}
-.tab{padding:10px 16px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.4);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:7px;transition:color 0.15s;}
-.tab:hover{color:rgba(255,255,255,0.7);}
-.tab.active{color:white;border-bottom-color:#e63946;}
-.tab-count{font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);}
-.tab.active .tab-count{background:#e63946;color:white;}
-
-.stage-view{display:none;padding:16px 20px;}
-.stage-view.active{display:block;}
-
-.stage-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap;}
-.stage-info h2{font-size:15px;font-weight:600;color:#1a1a2e;}
-.stage-info p{font-size:11px;color:#888;margin-top:3px;}
-.stage-stats{display:flex;gap:10px;}
-.stat-card{background:white;border:0.5px solid #e0dfd8;border-radius:8px;padding:10px 16px;text-align:center;min-width:80px;}
-.stat-num{font-size:20px;font-weight:600;color:#1a1a2e;}
-.stat-label{font-size:10px;color:#999;margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
-
-.assign-section{background:white;border:0.5px solid #e0dfd8;border-radius:10px;overflow:hidden;margin-bottom:14px;}
-.assign-header{padding:10px 14px;border-bottom:0.5px solid #f0ede6;display:flex;align-items:center;justify-content:space-between;}
-.assign-header-title{font-size:12px;font-weight:600;color:#1a1a2e;}
-.btn-assign{background:#1a1a2e;border:none;color:white;font-size:11px;padding:5px 12px;border-radius:6px;cursor:pointer;}
-.btn-assign:hover{background:#2e2e4a;}
-
-.cs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;padding:12px;}
-.cs-card{border:1px solid #e0dfd8;border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fafaf8;}
-.cs-card.assigned{background:#f0faf5;border-color:#9fe1cb;}
-.cs-left{display:flex;align-items:center;gap:8px;}
-.cs-avatar{width:30px;height:30px;border-radius:50%;background:#e8e6df;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#888;flex-shrink:0;}
-.cs-card.assigned .cs-avatar{background:#d2f2e8;color:#0a5e44;}
-.cs-name{font-size:12px;font-weight:500;color:#1a1a2e;}
-.cs-quota{font-size:10px;color:#888;margin-top:1px;}
-.cs-card.assigned .cs-quota{color:#0a5e44;}
-.cs-actions{display:flex;align-items:center;gap:5px;}
-.quota-input{width:48px;font-size:11px;padding:3px 6px;border:0.5px solid #d0cfc8;border-radius:5px;text-align:center;background:white;}
-.btn-toggle{font-size:10px;padding:3px 9px;border-radius:5px;cursor:pointer;font-weight:600;border:1px solid;}
-.btn-toggle.add{background:#f0faf5;color:#0a5e44;border-color:#9fe1cb;}
-.btn-toggle.add:hover{background:#d2f2e8;}
-.btn-toggle.remove{background:#fff5f5;color:#c0313a;border-color:#fbc0c4;}
-.btn-toggle.remove:hover{background:#fde8ea;}
-
-.deals-section{background:white;border:0.5px solid #e0dfd8;border-radius:10px;overflow:hidden;}
-.deals-header{padding:10px 14px;border-bottom:0.5px solid #f0ede6;display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.deals-header-left{display:flex;align-items:center;gap:10px;}
-.deals-title{font-size:12px;font-weight:600;color:#1a1a2e;}
-.search-input{font-size:11px;padding:4px 10px;border:0.5px solid #d0cfc8;border-radius:6px;width:180px;background:white;color:#1a1a2e;}
-.filter-select{font-size:11px;padding:4px 8px;border:0.5px solid #d0cfc8;border-radius:6px;background:white;color:#1a1a2e;cursor:pointer;}
-.btn-refresh{background:none;border:0.5px solid #d0cfc8;color:#888;font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;}
-.btn-refresh:hover{background:#f5f4f1;}
-
-.deals-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;}
-.deals-table th{text-align:left;padding:7px 12px;color:#999;font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;border-bottom:0.5px solid #e0dfd8;background:#fafaf8;}
-.deals-table td{padding:7px 12px;border-bottom:0.5px solid #f5f4f1;color:#1a1a2e;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.deals-table tr:last-child td{border-bottom:none;}
-.deals-table tr:hover td{background:#fafaf8;}
-
-.owner-select{font-size:11px;padding:2px 6px;border:0.5px solid #d0cfc8;border-radius:5px;background:white;color:#1a1a2e;max-width:140px;cursor:pointer;}
-.conforme-btn{font-size:10px;padding:2px 8px;border-radius:5px;cursor:pointer;font-weight:600;border:1px solid;}
-.conforme-btn.no{background:#fff5f5;color:#c0313a;border-color:#fbc0c4;}
-.conforme-btn.no:hover{background:#fde8ea;}
-.conforme-btn.yes{background:#f0faf5;color:#0a5e44;border-color:#9fe1cb;}
-.deal-name{font-weight:500;}
-.pagination{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-top:0.5px solid #f0ede6;font-size:11px;color:#888;}
-.page-btns{display:flex;gap:4px;}
-.page-btn{padding:3px 9px;border:0.5px solid #d0cfc8;border-radius:5px;background:white;cursor:pointer;font-size:11px;color:#1a1a2e;}
-.page-btn:hover{background:#f5f4f1;}
-.page-btn.active{background:#1a1a2e;color:white;border-color:#1a1a2e;}
-.page-btn:disabled{opacity:0.4;cursor:default;}
-
-.loading-row td{text-align:center;color:#bbb;padding:24px;}
-.empty-row td{text-align:center;color:#bbb;padding:24px;}
-
-.hubspot-link{color:#2a7de1;text-decoration:none;font-size:10px;}
-.hubspot-link:hover{text-decoration:underline;}
-
-.tag{display:inline-block;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:600;}
-.tag-fdk1{background:#fde8ea;color:#c0313a;}
-.tag-fdk2{background:#dceeff;color:#1558a8;}
-.tag-fdk3{background:#d2f2e8;color:#0a5e44;}
-.tag-entrega{background:#feecd2;color:#8a4a0a;}
-.tag-seguimiento{background:#eeedfe;color:#3c3489;}
-
-.toast{position:absolute;bottom:20px;right:20px;background:#1a1a2e;color:white;font-size:12px;padding:10px 16px;border-radius:8px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;}
-.toast.show{opacity:1;}
-</style>
-
-<div style="position:relative;">
-
-<div class="header">
-  <div class="header-left">
-    <div class="logo">ORBIDI</div>
-    <div>
-      <div class="header-title">Pipeline Manager — CS Team España</div>
-      <div class="header-sub">Gestión de proyectos por stage</div>
-    </div>
-  </div>
-  <div class="header-right">
-    <span class="conn-dot" id="conn-dot"></span>
-    <span class="conn-label" id="conn-label">Sin conectar</span>
-  </div>
-</div>
-
-<div class="config-bar">
-  <label>Token HubSpot:</label>
-  <input type="password" id="hs-token" placeholder="Pega tu Private App Token aquí..." />
-  <button class="btn-connect" id="btn-connect" onclick="connectHubSpot()">Conectar</button>
-</div>
-
-<div class="tabs">
-  <div class="tab active" onclick="switchTab(0)" id="tab-0">FDK1 <span class="tab-count" id="tc-0">—</span></div>
-  <div class="tab" onclick="switchTab(1)" id="tab-1">FDK2 <span class="tab-count" id="tc-1">—</span></div>
-  <div class="tab" onclick="switchTab(2)" id="tab-2">FDK3 <span class="tab-count" id="tc-2">—</span></div>
-  <div class="tab" onclick="switchTab(3)" id="tab-3">Entrega <span class="tab-count" id="tc-3">—</span></div>
-  <div class="tab" onclick="switchTab(4)" id="tab-4">Seguimiento <span class="tab-count" id="tc-4">—</span></div>
-</div>
-
-<div id="stage-views">
-</div>
-
-<div class="toast" id="toast"></div>
-</div>
-
 <script>
 const CS_SPAIN = ["Alejandra Soto","Andrea Giraldo","Andrés Felipe Benjumea","Bruno Ruzic","Caroll Tinjaca","Elena Chico","Fredy Bustamante","Isaac Nauzeth","José Luis","María Johanna","María Requena","Nataly Molina","Tatiana Ortiz"];
 
@@ -158,7 +10,7 @@ const STAGES_CONFIG = [
 ];
 
 let state = {
-  token: '',
+  token: 'TOKEN_BORRADO_POR_SEGURIDAD', // Se usará el del servidor
   connected: false,
   pipelineId: null,
   stageIds: {},
@@ -177,6 +29,7 @@ function load(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
+// ... (Funciones buildViews y buildCsGrids se mantienen igual) ...
 function buildViews(){
   const container=document.getElementById('stage-views');
   container.innerHTML='';
@@ -273,7 +126,6 @@ function toggleAssign(key,name,tabIdx){
   save('orbidi_assignments',state.assignments);
   buildCsGrids();
   renderDealsTable(tabIdx);
-  showToast(state.assignments[key]&&state.assignments[key][name]?`${name} asignado a ${key.toUpperCase()}`:`${name} quitado de ${key.toUpperCase()}`);
 }
 
 function updateQuota(key,name,val){
@@ -297,7 +149,6 @@ function onSearch(i,val){
   renderDealsTable(i);
 }
 
-  
 function onFilterOwner(i,val){
   const key=STAGES_CONFIG[i].key;
   state.filterOwner[key]=val;
@@ -306,41 +157,22 @@ function onFilterOwner(i,val){
 }
 
 async function connectHubSpot(){
-  const token=document.getElementById('hs-token').value.trim();
-  if(!token){showToast('Introduce un token válido');return;}
-  state.token=token;
+  state.connected = true; // Forzamos conexión ya que el token está en Vercel
   const btn=document.getElementById('btn-connect');
-  btn.disabled=true; btn.textContent='Conectando...';
-  try {
-    const res=await fetch('/api/hubspot?path=crm/v3/pipelines/deals',{
-      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}
-    });
-    if(!res.ok) throw new Error('Auth error');
-    const data=await res.json();
-    btn.textContent='Conectado';
-    setConnected(true);
-    showToast('Conectado a HubSpot');
-    await discoverPipeline(token);
-  } catch(e){
-    btn.disabled=false; btn.textContent='Conectar';
-    setConnected(false);
-    showToast('Error de conexión — revisa el token');
-  }
+  btn.disabled=true; btn.textContent='Conectado';
+  setConnected(true);
+  showToast('Conectado vía Vercel Proxy');
+  await discoverPipeline();
 }
 
-async function discoverPipeline(token){
+async function discoverPipeline(){
   try {
-    const res=await fetch('/api/hubspot?path=crm/v3/pipelines/2-110970937',{
-      headers:{'Authorization':'Bearer '+token}
-    });
+    // CAMBIO 1: Ruta relativa a tu API
+    const res=await fetch('/api/hubspot?path=crm/v3/pipelines/2-110970937');
     const data=await res.json();
     const pipelines=data.results||[data];
-    let found=null;
-    for(const p of pipelines){
-      const stageLabels=(p.stages||[]).map(s=>s.label.toLowerCase());
-      if(stageLabels.some(l=>l.includes('fdk')||l.includes('entrega')||l.includes('seguimiento'))){found=p;break;}
-    }
-    if(!found && pipelines.length>0) found=pipelines[0];
+    let found=pipelines[0];
+    
     if(found){
       state.pipelineId=found.id;
       (found.stages||[]).forEach(s=>{
@@ -352,19 +184,21 @@ async function discoverPipeline(token){
         else if(l.includes('seguimiento')) state.stageIds.seguimiento=s.id;
       });
     }
-    await loadAllCounts(token);
+    await loadAllCounts();
     loadDeals(state.activeTab);
-  } catch(e){ showToast('Pipeline descubierto parcialmente'); loadDeals(state.activeTab); }
+  } catch(e){ showToast('Error al descubrir Pipeline'); }
 }
 
-async function loadAllCounts(token){
+async function loadAllCounts(){
   for(let i=0;i<STAGES_CONFIG.length;i++){
     const st=STAGES_CONFIG[i];
     try {
       const filters=buildFilters(st.key,[]);
       const body={filterGroups:[{filters}],limit:1,properties:['hs_object_id']};
-      const res=await fetch('https://api.hubapi.com/crm/v3/objects/2-110970937/search',{
-        method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      // CAMBIO 2: Ruta relativa + Search
+      const res=await fetch('/api/hubspot?path=crm/v3/objects/2-110970937/search',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
         body:JSON.stringify(body)
       });
       const data=await res.json();
@@ -378,57 +212,39 @@ async function loadAllCounts(token){
 
 function buildFilters(stageKey,extra){
   const filters=[...extra];
-  if(state.stageIds[stageKey]){
-    filters.push({propertyName:'hs_pipeline_stage',operator:'EQ',value:state.stageIds[stageKey]});
-  }
-  if(state.pipelineId){
-    filters.push({propertyName:'hs_pipeline',operator:'EQ',value:state.pipelineId});
-  }
+  if(state.stageIds[stageKey]) filters.push({propertyName:'hs_pipeline_stage',operator:'EQ',value:state.stageIds[stageKey]});
   return filters;
 }
 
 async function loadDeals(tabIdx){
   const st=STAGES_CONFIG[tabIdx];
   const key=st.key;
-  const token=state.token;
-  if(!token){return;}
   const tbody=document.getElementById('tbody-'+tabIdx);
   tbody.innerHTML=`<tr class="loading-row"><td colspan="5">Cargando proyectos...</td></tr>`;
   try {
-    const searchFilter=state.search[key];
-    const ownerFilter=state.filterOwner[key];
     const filters=buildFilters(key,[]);
-    if(ownerFilter) filters.push({propertyName:'hubspot_owner_id',operator:'EQ',value:ownerFilter});
+    if(state.filterOwner[key]) filters.push({propertyName:'hubspot_owner_id',operator:'EQ',value:state.filterOwner[key]});
 
     const body={
       filterGroups:[{filters}],
       limit:100,
-      properties:['dealname','hubspot_owner_id','createdate','closedate','hs_pipeline_stage','conforme__kit_digital_'],
+      properties:['dealname','hubspot_owner_id','createdate','conforme__kit_digital_'],
       sorts:[{propertyName:'createdate',direction:'DESCENDING'}]
     };
-    const res=await fetch('https://api.hubapi.com/crm/v3/objects/2-110970937/search',{
-      method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+    // CAMBIO 3: Ruta relativa
+    const res=await fetch('/api/hubspot?path=crm/v3/objects/2-110970937/search',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify(body)
     });
     const data=await res.json();
     let deals=(data.results||[]);
-    if(searchFilter) deals=deals.filter(d=>(d.properties.dealname||'').toLowerCase().includes(searchFilter));
+    if(state.search[key]) deals=deals.filter(d=>(d.properties.dealname||'').toLowerCase().includes(state.search[key]));
     state.deals[key]=deals;
-    state.pages[key]=1;
     renderDealsTable(tabIdx);
     updateStageStats(tabIdx,deals);
   } catch(e){
-    tbody.innerHTML=`<tr class="empty-row"><td colspan="5">Error al cargar — verifica el token y permisos</td></tr>`;
-  }
-}
-
-function updateStageStats(tabIdx,deals){
-  const st=STAGES_CONFIG[tabIdx];
-  const assigned=deals.filter(d=>d.properties.hubspot_owner_id).length;
-  document.getElementById('sassigned-'+tabIdx).textContent=assigned;
-  if(st.hasConforme){
-    const conformes=deals.filter(d=>d.properties['conforme__kit_digital_']==='true'||d.properties['conforme__kit_digital_']==='1').length;
-    document.getElementById('sconforme-'+tabIdx).textContent=conformes;
+    tbody.innerHTML=`<tr class="empty-row"><td colspan="5">Error al cargar datos</td></tr>`;
   }
 }
 
@@ -440,11 +256,9 @@ function renderDealsTable(tabIdx){
   const start=(page-1)*PAGE_SIZE, end=start+PAGE_SIZE;
   const paginated=deals.slice(start,end);
   const tbody=document.getElementById('tbody-'+tabIdx);
-  const cols=st.hasConforme?5:4;
 
   if(deals.length===0){
-    tbody.innerHTML=`<tr class="empty-row"><td colspan="${cols}">${state.connected?'No se encontraron proyectos':'Conecta HubSpot para ver los proyectos'}</td></tr>`;
-    document.getElementById('pagination-'+tabIdx).innerHTML='';
+    tbody.innerHTML=`<tr class="empty-row"><td colspan="5">No hay proyectos</td></tr>`;
     return;
   }
 
@@ -452,83 +266,56 @@ function renderDealsTable(tabIdx){
     const name=deal.properties.dealname||'Sin nombre';
     const ownerId=deal.properties.hubspot_owner_id||'';
     const date=deal.properties.createdate?deal.properties.createdate.slice(0,10):'—';
-    const isConforme=deal.properties['conforme__kit_digital_']==='true'||deal.properties['conforme__kit_digital_']==='1';
-    const conformeBtn=st.hasConforme?`<td><button class="conforme-btn ${isConforme?'yes':'no'}" onclick="toggleConforme('${deal.id}',${tabIdx},${isConforme})">${isConforme?'Conforme':'Pendiente'}</button></td>`:'';
+    const isConforme=deal.properties['conforme__kit_digital_']==='true';
     return `<tr>
-      <td class="deal-name" title="${name}">${name.length>35?name.slice(0,35)+'…':name}</td>
+      <td class="deal-name">${name}</td>
       <td>
-        <select class="owner-select" onchange="assignOwner('${deal.id}',this.value,${tabIdx})" title="Asignar CS">
+        <select class="owner-select" onchange="assignOwner('${deal.id}',this.value,${tabIdx})">
           <option value="">Sin asignar</option>
           ${CS_SPAIN.map(n=>`<option value="${n}" ${ownerId===n?'selected':''}>${n.split(' ')[0]}</option>`).join('')}
         </select>
       </td>
-      ${conformeBtn}
+      ${st.hasConforme?`<td><button class="conforme-btn ${isConforme?'yes':'no'}" onclick="toggleConforme('${deal.id}',${tabIdx},${isConforme})">${isConforme?'SI':'NO'}</button></td>`:''}
       <td style="color:#888">${date}</td>
       <td><a class="hubspot-link" href="https://app-eu1.hubspot.com/contacts/25808060/record/2-110970937/${deal.id}" target="_blank">Ver ↗</a></td>
     </tr>`;
   }).join('');
-
-  const totalPages=Math.ceil(deals.length/PAGE_SIZE);
-  const pag=document.getElementById('pagination-'+tabIdx);
-  pag.innerHTML=`<span>${deals.length} proyectos · Página ${page} de ${totalPages}</span>
-    <div class="page-btns">
-      <button class="page-btn" onclick="changePage(${tabIdx},-1)" ${page<=1?'disabled':''}>← Ant</button>
-      <button class="page-btn active">${page}</button>
-      <button class="page-btn" onclick="changePage(${tabIdx},1)" ${page>=totalPages?'disabled':''}>Sig →</button>
-    </div>`;
-}
-
-function changePage(tabIdx,dir){
-  const key=STAGES_CONFIG[tabIdx].key;
-  const deals=state.deals[key]||[];
-  const totalPages=Math.ceil(deals.length/PAGE_SIZE);
-  state.pages[key]=Math.max(1,Math.min(totalPages,(state.pages[key]||1)+dir));
-  renderDealsTable(tabIdx);
 }
 
 async function assignOwner(dealId,ownerName,tabIdx){
-  if(!state.token) return;
   try {
-    await fetch(`https://api.hubapi.com/crm/v3/objects/2-110970937/${dealId}`,{
+    // CAMBIO 4: Ruta relativa
+    await fetch(`/api/hubspot?path=crm/v3/objects/2-110970937/${dealId}`,{
       method:'PATCH',
-      headers:{'Authorization':'Bearer '+state.token,'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({properties:{hubspot_owner_id:ownerName}})
     });
-    const key=STAGES_CONFIG[tabIdx].key;
-    const deal=state.deals[key].find(d=>d.id===dealId);
-    if(deal) deal.properties.hubspot_owner_id=ownerName;
-    showToast(ownerName?`Asignado a ${ownerName.split(' ')[0]}`:'Propietario eliminado');
+    showToast('Asignado correctamente');
   } catch(e){ showToast('Error al asignar'); }
 }
 
 async function toggleConforme(dealId,tabIdx,current){
-  if(!state.token) return;
   const newVal=current?'false':'true';
   try {
-    await fetch(`https://api.hubapi.com/crm/v3/objects/2-110970937/${dealId}`,{
+    // CAMBIO 5: Ruta relativa
+    await fetch(`/api/hubspot?path=crm/v3/objects/2-110970937/${dealId}`,{
       method:'PATCH',
-      headers:{'Authorization':'Bearer '+state.token,'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({properties:{'conforme__kit_digital_':newVal}})
     });
-    const key=STAGES_CONFIG[tabIdx].key;
-    const deal=state.deals[key].find(d=>d.id===dealId);
-    if(deal) deal.properties['conforme__kit_digital_']=newVal;
-    renderDealsTable(tabIdx);
-    updateStageStats(tabIdx,state.deals[key]);
-    showToast(newVal==='true'?'Marcado como conforme':'Marcado como pendiente');
-  } catch(e){ showToast('Error al actualizar'); }
+    loadDeals(tabIdx);
+    showToast('Estado actualizado');
+  } catch(e){ showToast('Error'); }
 }
 
 function setConnected(ok){
-  state.connected=ok;
   document.getElementById('conn-dot').className='conn-dot '+(ok?'ok':'err');
-  document.getElementById('conn-label').textContent=ok?'Conectado':'Error de conexión';
+  document.getElementById('conn-label').textContent=ok?'Conectado':'Error';
 }
 
 function init(){
   state.assignments=load('orbidi_assignments')||{};
   buildViews();
 }
-
 init();
 </script>

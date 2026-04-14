@@ -38,27 +38,6 @@ body{font-family:'Inter','Segoe UI',sans-serif;background:#f0ede6;font-size:13px
 .stat-num{font-size:20px;font-weight:600;color:#1a1a2e;}
 .stat-label{font-size:10px;color:#999;margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
 
-.assign-section{background:white;border:0.5px solid #e0dfd8;border-radius:10px;overflow:hidden;margin-bottom:14px;}
-.assign-header{padding:10px 14px;border-bottom:0.5px solid #f0ede6;display:flex;align-items:center;justify-content:space-between;}
-.assign-header-title{font-size:12px;font-weight:600;color:#1a1a2e;}
-
-.cs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;padding:12px;}
-.cs-card{border:1px solid #e0dfd8;border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fafaf8;}
-.cs-card.assigned{background:#f0faf5;border-color:#9fe1cb;}
-.cs-left{display:flex;align-items:center;gap:8px;}
-.cs-avatar{width:30px;height:30px;border-radius:50%;background:#e8e6df;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#888;flex-shrink:0;}
-.cs-card.assigned .cs-avatar{background:#d2f2e8;color:#0a5e44;}
-.cs-name{font-size:12px;font-weight:500;color:#1a1a2e;}
-.cs-quota{font-size:10px;color:#888;margin-top:1px;}
-.cs-card.assigned .cs-quota{color:#0a5e44;}
-.cs-actions{display:flex;align-items:center;gap:5px;}
-.quota-input{width:48px;font-size:11px;padding:3px 6px;border:0.5px solid #d0cfc8;border-radius:5px;text-align:center;background:white;}
-.btn-toggle{font-size:10px;padding:3px 9px;border-radius:5px;cursor:pointer;font-weight:600;border:1px solid;}
-.btn-toggle.add{background:#f0faf5;color:#0a5e44;border-color:#9fe1cb;}
-.btn-toggle.add:hover{background:#d2f2e8;}
-.btn-toggle.remove{background:#fff5f5;color:#c0313a;border-color:#fbc0c4;}
-.btn-toggle.remove:hover{background:#fde8ea;}
-
 .deals-section{background:white;border:0.5px solid #e0dfd8;border-radius:10px;overflow:hidden;}
 .deals-header{padding:10px 14px;border-bottom:0.5px solid #f0ede6;display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .deals-header-left{display:flex;align-items:center;gap:10px;}
@@ -105,7 +84,7 @@ body{font-family:'Inter','Segoe UI',sans-serif;background:#f0ede6;font-size:13px
     <div class="logo">ORBIDI</div>
     <div>
       <div class="header-title">Pipeline Manager — CS Team España</div>
-      <div class="header-sub">Dashboard de solo lectura & Asignación local</div>
+      <div class="header-sub">Dashboard de Monitorización</div>
     </div>
   </div>
   <div class="header-right">
@@ -144,7 +123,6 @@ let state = {
   stageIds: {},
   deals: {fdk1:[],fdk2:[],fdk3:[],entrega:[],seguimiento:[]},
   counts: {fdk1:0,fdk2:0,fdk3:0,entrega:0,seguimiento:0},
-  assignments: {},
   pages: {fdk1:1,fdk2:1,fdk3:1,entrega:1,seguimiento:1},
   search: {fdk1:'',fdk2:'',fdk3:'',entrega:'',seguimiento:''},
   filterOwner: {fdk1:'',fdk2:'',fdk3:'',entrega:'',seguimiento:''},
@@ -152,9 +130,6 @@ let state = {
 };
 const PAGE_SIZE = 20;
 
-function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
-function load(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
-function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 function buildViews(){
@@ -176,13 +151,7 @@ function buildViews(){
           ${st.hasConforme?`<div class="stat-card"><div class="stat-num" id="sconforme-${i}" style="color:#1d9e75">—</div><div class="stat-label">Conformes</div></div>`:''}
         </div>
       </div>
-      ${!st.readOnly?`
-      <div class="assign-section">
-        <div class="assign-header">
-          <span class="assign-header-title">Asignación local de volumen (No modifica HubSpot)</span>
-        </div>
-        <div class="cs-grid" id="cs-grid-${i}"></div>
-      </div>`:'<div style="background:#fde8ea;border-radius:8px;padding:10px 14px;font-size:12px;color:#8c1c22;margin-bottom:14px;">Este stage está gestionado por el equipo de Colombia.</div>'}
+      ${st.readOnly?'<div style="background:#fde8ea;border-radius:8px;padding:10px 14px;font-size:12px;color:#8c1c22;margin-bottom:14px;">Este stage está gestionado por el equipo de Colombia.</div>':''}
       <div class="deals-section">
         <div class="deals-header">
           <div class="deals-header-left">
@@ -210,55 +179,6 @@ function buildViews(){
     `;
     container.appendChild(div);
   });
-  buildCsGrids();
-}
-
-function buildCsGrids(){
-  STAGES_CONFIG.forEach((st,i)=>{
-    if(st.readOnly) return;
-    const grid=document.getElementById('cs-grid-'+i);
-    if(!grid) return;
-    grid.innerHTML='';
-    CS_SPAIN.forEach(name=>{
-      const key=st.key;
-      const asgn=state.assignments[key]||{};
-      const isAssigned=!!asgn[name];
-      const quota=asgn[name]||0;
-      const card=document.createElement('div');
-      card.className='cs-card'+(isAssigned?' assigned':'');
-      card.id=`cscard-${i}-${name.replace(/\s/g,'_')}`;
-      card.innerHTML=`
-        <div class="cs-left">
-          <div class="cs-avatar">${initials(name)}</div>
-          <div>
-            <div class="cs-name">${name}</div>
-            <div class="cs-quota">${isAssigned?`Cuota: <strong>${quota}</strong> proyectos`:'Sin asignar'}</div>
-          </div>
-        </div>
-        <div class="cs-actions">
-          ${isAssigned?`<input type="number" class="quota-input" value="${quota}" min="0" max="500" onchange="updateQuota('${key}','${name}',this.value)" title="Proyectos asignados localmente"/>
-          <button class="btn-toggle remove" onclick="toggleAssign('${key}','${name}',${i})">Quitar</button>`
-          :`<button class="btn-toggle add" onclick="toggleAssign('${key}','${name}',${i})">Asignar</button>`}
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-  });
-}
-
-function toggleAssign(key,name,tabIdx){
-  if(!state.assignments[key]) state.assignments[key]={};
-  if(state.assignments[key][name]) delete state.assignments[key][name];
-  else state.assignments[key][name]=50;
-  save('orbidi_assignments',state.assignments);
-  buildCsGrids();
-}
-
-function updateQuota(key,name,val){
-  if(!state.assignments[key]) state.assignments[key]={};
-  state.assignments[key][name]=parseInt(val)||0;
-  save('orbidi_assignments',state.assignments);
-  buildCsGrids();
 }
 
 function switchTab(i){
@@ -405,7 +325,7 @@ function renderDealsTable(tabIdx){
   const cols=st.hasConforme?5:4;
 
   if(deals.length===0){
-    tbody.innerHTML=`<tr class="empty-row"><td colspan="${cols}">${state.connected?'No se encontraron proyectos':'Conecta HubSpot para ver los proyectos'}</td></tr>`;
+    tbody.innerHTML=`<tr class="empty-row"><td colspan="${cols}">No se encontraron proyectos</td></tr>`;
     document.getElementById('pagination-'+tabIdx).innerHTML='';
     return;
   }
@@ -416,7 +336,6 @@ function renderDealsTable(tabIdx){
     const date=deal.properties.createdate?deal.properties.createdate.slice(0,10):'—';
     const isConforme=deal.properties['conforme__kit_digital_']==='true'||deal.properties['conforme__kit_digital_']==='1';
     
-    // Botón deshabilitado para solo lectura
     const conformeBtn=st.hasConforme?`<td><button class="conforme-btn ${isConforme?'yes':'no'}" title="Editar en HubSpot">${isConforme?'Conforme':'Pendiente'}</button></td>`:'';
     
     return `<tr>
@@ -459,9 +378,8 @@ function setConnected(ok){
 }
 
 function init(){
-  state.assignments=load('orbidi_assignments')||{};
   buildViews();
-  connectHubSpot(); // Auto-conecta al abrir la web
+  connectHubSpot();
 }
 
 init();

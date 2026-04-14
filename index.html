@@ -20,13 +20,7 @@ body{font-family:'Inter','Segoe UI',sans-serif;background:#f0ede6;font-size:13px
 .conn-dot.loading{background:#e67e22;}
 .conn-label{font-size:11px;color:rgba(255,255,255,0.5);}
 
-.debug-bar{background:#13132a;padding:8px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.06);}
-.debug-bar span{font-size:11px;color:rgba(255,255,255,0.35);}
-.debug-bar strong{color:rgba(255,255,255,0.6);}
-.btn-debug{background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.5);font-size:10px;padding:3px 10px;border-radius:5px;cursor:pointer;}
-.btn-debug:hover{background:rgba(255,255,255,0.12);color:white;}
-
-.tabs{background:#1a1a2e;display:flex;padding:0 20px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.tabs{background:#1a1a2e;display:flex;gap:0;padding:0 20px;border-bottom:1px solid rgba(255,255,255,0.08);}
 .tab{padding:10px 16px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.4);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:7px;transition:color 0.15s;}
 .tab:hover{color:rgba(255,255,255,0.7);}
 .tab.active{color:white;border-bottom-color:#e63946;}
@@ -45,8 +39,8 @@ body{font-family:'Inter','Segoe UI',sans-serif;background:#f0ede6;font-size:13px
 .stat-label{font-size:10px;color:#999;margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
 
 .deals-section{background:white;border:0.5px solid #e0dfd8;border-radius:10px;overflow:hidden;}
-.deals-header{padding:10px 14px;border-bottom:0.5px solid #f0ede6;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-.deals-header-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.deals-header{padding:10px 14px;border-bottom:0.5px solid #f0ede6;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.deals-header-left{display:flex;align-items:center;gap:10px;}
 .deals-title{font-size:12px;font-weight:600;color:#1a1a2e;}
 .search-input{font-size:11px;padding:4px 10px;border:0.5px solid #d0cfc8;border-radius:6px;width:180px;background:white;color:#1a1a2e;}
 .filter-select{font-size:11px;padding:4px 8px;border:0.5px solid #d0cfc8;border-radius:6px;background:white;color:#1a1a2e;cursor:pointer;}
@@ -59,22 +53,11 @@ body{font-family:'Inter','Segoe UI',sans-serif;background:#f0ede6;font-size:13px
 .deals-table tr:last-child td{border-bottom:none;}
 .deals-table tr:hover td{background:#fafaf8;}
 
-/* CS select — activo y visible */
-.owner-select{
-  font-size:11px;padding:3px 6px;
-  border:1px solid #d0cfc8;border-radius:5px;
-  background:white;color:#1a1a2e;
-  max-width:145px;cursor:pointer;
-  transition:border-color 0.15s;
-}
-.owner-select:hover{border-color:#888;}
-.owner-select:focus{outline:none;border-color:#2a7de1;}
-.owner-select.saved{border-color:#1d9e75;background:#f0faf5;}
-
-.conforme-btn{font-size:10px;padding:2px 8px;border-radius:5px;font-weight:600;border:1px solid;cursor:default;opacity:0.85;}
+.owner-select{font-size:11px;padding:2px 6px;border:0.5px solid #d0cfc8;border-radius:5px;background:white;color:#1a1a2e;max-width:140px; cursor:pointer;}
+.owner-select:disabled{background:#f5f4f1; color:#888; border-color:#e0dfd8; cursor:not-allowed;}
+.conforme-btn{font-size:10px;padding:2px 8px;border-radius:5px;font-weight:600;border:1px solid; cursor:default; opacity:0.8;}
 .conforme-btn.no{background:#fff5f5;color:#c0313a;border-color:#fbc0c4;}
 .conforme-btn.yes{background:#f0faf5;color:#0a5e44;border-color:#9fe1cb;}
-
 .deal-name{font-weight:500;}
 .pagination{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-top:0.5px solid #f0ede6;font-size:11px;color:#888;}
 .page-btns{display:flex;gap:4px;}
@@ -83,64 +66,31 @@ body{font-family:'Inter','Segoe UI',sans-serif;background:#f0ede6;font-size:13px
 .page-btn.active{background:#1a1a2e;color:white;border-color:#1a1a2e;}
 .page-btn:disabled{opacity:0.4;cursor:default;}
 
-.loading-row td,.empty-row td{text-align:center;color:#bbb;padding:24px;}
+.loading-row td{text-align:center;color:#bbb;padding:24px;}
+.empty-row td{text-align:center;color:#bbb;padding:24px;}
+
 .hubspot-link{color:#2a7de1;text-decoration:none;font-size:10px;}
 .hubspot-link:hover{text-decoration:underline;}
 
-.readonly-banner{background:#fde8ea;border-radius:8px;padding:10px 14px;font-size:12px;color:#8c1c22;margin-bottom:14px;}
-
-.toast{position:fixed;bottom:20px;right:20px;background:#1a1a2e;color:white;font-size:12px;padding:10px 16px;border-radius:8px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:1000;}
+.toast{position:absolute;bottom:20px;right:20px;background:#1a1a2e;color:white;font-size:12px;padding:10px 16px;border-radius:8px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;}
 .toast.show{opacity:1;}
-.toast.ok{background:#085041;}
-.toast.err{background:#8c1c22;}
-
-/* Modal de debug */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;}
-.modal-overlay.open{display:flex;}
-.modal{background:white;border-radius:12px;padding:20px;width:500px;max-height:80vh;overflow-y:auto;}
-.modal h3{font-size:14px;font-weight:600;margin-bottom:12px;color:#1a1a2e;}
-.modal pre{background:#f5f4f1;border-radius:6px;padding:10px;font-size:10px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;color:#2c2c2a;max-height:300px;overflow-y:auto;}
-.modal-close{float:right;background:none;border:none;font-size:16px;cursor:pointer;color:#888;margin-top:-4px;}
-.modal .btn-test{background:#1a1a2e;color:white;border:none;font-size:11px;padding:6px 14px;border-radius:6px;cursor:pointer;margin-top:8px;margin-right:6px;}
-.modal .btn-test:hover{background:#2e2e4a;}
 </style>
 </head>
 <body>
-
-<div class="toast" id="toast"></div>
-
-<div class="modal-overlay" id="debug-modal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeDebug()">✕</button>
-    <h3>Diagnóstico de conexión</h3>
-    <div id="debug-content"><em style="color:#888;font-size:12px;">Pulsa un botón para ejecutar el test</em></div>
-    <div style="margin-top:12px;">
-      <button class="btn-test" onclick="testRedis()">Test Redis (GET/SET)</button>
-      <button class="btn-test" onclick="testHubspot()">Test HubSpot API</button>
-      <button class="btn-test" onclick="testAssignments()">Ver asignaciones en Redis</button>
-    </div>
-  </div>
-</div>
+<div style="position:relative;">
 
 <div class="header">
   <div class="header-left">
     <div class="logo">ORBIDI</div>
     <div>
       <div class="header-title">Pipeline Manager — CS Team España</div>
-      <div class="header-sub">Dashboard de Monitorización</div>
+      <div class="header-sub">Dashboard de Asignación Colaborativa</div>
     </div>
   </div>
   <div class="header-right">
     <span class="conn-dot loading" id="conn-dot"></span>
     <span class="conn-label" id="conn-label">Conectando...</span>
   </div>
-</div>
-
-<div class="debug-bar">
-  <span>Estado: <strong id="debug-status">Iniciando...</strong></span>
-  <span>Pipeline: <strong id="debug-pipeline">—</strong></span>
-  <span>Stages mapeados: <strong id="debug-stages">0/5</strong></span>
-  <button class="btn-debug" onclick="openDebug()">Abrir diagnóstico</button>
 </div>
 
 <div class="tabs">
@@ -152,24 +102,36 @@ body{font-family:'Inter','Segoe UI',sans-serif;background:#f0ede6;font-size:13px
 </div>
 
 <div id="stage-views"></div>
+<div class="toast" id="toast"></div>
+
+</div>
 
 <script>
+// AQUÍ ESTÁN LOS NOMBRES EXACTOS DEL EQUIPO CS
 const CS_SPAIN = [
-  "Alejandra Soto","Andrea Giraldo","Andrés Felipe Benjumea",
-  "Bruno Ruzic","Caroll Tinjaca","Elena Chico",
-  "Fredy Bustamante","Isaac Nauzeth","José Luis",
-  "María Johanna","María Requena","Nataly Molina","Tatiana Ortiz"
+  "Alejandra Soto",
+  "Andrea Giraldo",
+  "Andrés Felipe Benjumea",
+  "Bruno Ruzic",
+  "Caroll Tinjaca",
+  "Elena Chico",
+  "Fredy Bustamante",
+  "Isaac Nauzeth",
+  "José Luis",
+  "María Johanna",
+  "María Requena",
+  "Nataly Molina",
+  "Tatiana Ortiz"
 ];
 
 const STAGES_CONFIG = [
-  {key:'fdk1',  label:'FDK1',        color:'#e63946', desc:'Gestionado por equipo Colombia', readOnly:true},
-  {key:'fdk2',  label:'FDK2',        color:'#2a7de1', desc:'Contactar clientes'},
-  {key:'fdk3',  label:'FDK3',        color:'#1d9e75', desc:'Contactar clientes'},
-  {key:'entrega',     label:'Entrega',     color:'#e67e22', desc:'Revisar entrega y pasar a Seguimiento'},
-  {key:'seguimiento', label:'Seguimiento', color:'#534AB7', desc:'Verificar conformes', hasConforme:true},
+  {key:'fdk1', label:'FDK1', color:'#e63946', tagClass:'tag-fdk1', desc:'Gestionado por equipo Colombia — solo lectura', readOnly:true},
+  {key:'fdk2', label:'FDK2', color:'#2a7de1', tagClass:'tag-fdk2', desc:'Contactar clientes'},
+  {key:'fdk3', label:'FDK3', color:'#1d9e75', tagClass:'tag-fdk3', desc:'Contactar clientes'},
+  {key:'entrega', label:'Entrega', color:'#e67e22', tagClass:'tag-entrega', desc:'Revisar entrega y pasar a Seguimiento'},
+  {key:'seguimiento', label:'Seguimiento', color:'#534AB7', tagClass:'tag-seguimiento', desc:'Verificar conformes', hasConforme:true},
 ];
 
-const PAGE_SIZE = 20;
 let state = {
   connected: false,
   pipelineId: null,
@@ -181,81 +143,23 @@ let state = {
   filterOwner: {fdk1:'',fdk2:'',fdk3:'',entrega:'',seguimiento:''},
   activeTab: 0,
 };
+const PAGE_SIZE = 20;
 
-/* ─── Toast ─── */
-let toastTimer;
-function showToast(msg, type=''){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show' + (type ? ' '+type : '');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.className='toast', 3000);
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 
-/* ─── Debug bar ─── */
-function setDebugStatus(msg){ document.getElementById('debug-status').textContent = msg; }
-function setDebugPipeline(id){ document.getElementById('debug-pipeline').textContent = id || '—'; }
-function setDebugStages(){
-  const mapped = Object.keys(state.stageIds).length;
-  document.getElementById('debug-stages').textContent = mapped+'/5';
-}
-
-function openDebug(){ document.getElementById('debug-modal').classList.add('open'); }
-function closeDebug(){ document.getElementById('debug-modal').classList.remove('open'); }
-
-async function testRedis(){
-  setDebugContent('Probando Redis...');
-  try {
-    const r = await fetch('/api/hubspot', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({_test:'redis', dealId:'test-deal-123', csName:'Test CS'})
-    });
-    const txt = await r.text();
-    setDebugContent('POST (set) → status '+r.status+':\n'+txt+'\n\nAhora GET...');
-    const r2 = await fetch('/api/hubspot?_test=redis&dealId=test-deal-123');
-    const txt2 = await r2.text();
-    setDebugContent('POST (set) → status '+r.status+':\n'+txt+'\n\nGET (get) → status '+r2.status+':\n'+txt2);
-  } catch(e){ setDebugContent('ERROR: '+e.message); }
-}
-
-async function testHubspot(){
-  setDebugContent('Probando HubSpot API...');
-  try {
-    const r = await fetch('/api/hubspot?path=crm/v3/pipelines/2-110970937');
-    const txt = await r.text();
-    setDebugContent('GET pipelines → status '+r.status+':\n'+txt.slice(0,1500));
-  } catch(e){ setDebugContent('ERROR: '+e.message); }
-}
-
-async function testAssignments(){
-  setDebugContent('Cargando asignaciones de Redis...');
-  try {
-    const r = await fetch('/api/hubspot?_action=list-assignments');
-    const txt = await r.text();
-    setDebugContent('Asignaciones en Redis:\n'+txt);
-  } catch(e){ setDebugContent('ERROR: '+e.message); }
-}
-
-function setDebugContent(txt){
-  document.getElementById('debug-content').innerHTML = '<pre>'+txt+'</pre>';
-}
-
-/* ─── Build HTML views ─── */
 function buildViews(){
-  const container = document.getElementById('stage-views');
-  container.innerHTML = '';
-  STAGES_CONFIG.forEach((st, i) => {
-    const div = document.createElement('div');
-    div.className = 'stage-view' + (i===0?' active':'');
-    div.id = 'view-'+i;
-
-    const conformeTh  = st.hasConforme ? '<th style="width:12%">Conforme</th>' : '';
-    const readOnlyBanner = st.readOnly
-      ? '<div class="readonly-banner">Este stage está gestionado por el equipo de Colombia. Solo visualización.</div>'
-      : '';
-
-    div.innerHTML = `
+  const container=document.getElementById('stage-views');
+  container.innerHTML='';
+  STAGES_CONFIG.forEach((st,i)=>{
+    const div=document.createElement('div');
+    div.className='stage-view'+(i===0?' active':'');
+    div.id='view-'+i;
+    div.innerHTML=`
       <div class="stage-top">
         <div class="stage-info">
           <h2>${st.label}</h2>
@@ -263,34 +167,31 @@ function buildViews(){
         </div>
         <div class="stage-stats">
           <div class="stat-card"><div class="stat-num" id="scount-${i}">—</div><div class="stat-label">Total</div></div>
-          <div class="stat-card"><div class="stat-num" id="sassigned-${i}">—</div><div class="stat-label">Asignados</div></div>
-          ${st.hasConforme ? `<div class="stat-card"><div class="stat-num" id="sconforme-${i}" style="color:#1d9e75">—</div><div class="stat-label">Conformes</div></div>` : ''}
+          ${st.hasConforme?`<div class="stat-card"><div class="stat-num" id="sconforme-${i}" style="color:#1d9e75">—</div><div class="stat-label">Conformes</div></div>`:''}
         </div>
       </div>
-      ${readOnlyBanner}
+      ${st.readOnly?'<div style="background:#fde8ea;border-radius:8px;padding:10px 14px;font-size:12px;color:#8c1c22;margin-bottom:14px;">Este stage está gestionado por el equipo de Colombia. No se asigna localmente.</div>':''}
       <div class="deals-section">
         <div class="deals-header">
           <div class="deals-header-left">
             <span class="deals-title">Proyectos</span>
             <input class="search-input" placeholder="Buscar proyecto..." oninput="onSearch(${i},this.value)" id="search-${i}"/>
             <select class="filter-select" onchange="onFilterOwner(${i},this.value)" id="fowner-${i}">
-              <option value="">Todos los CS</option>
+              <option value="">Filtrar por CS Asignado</option>
               ${CS_SPAIN.map(n=>`<option value="${n}">${n}</option>`).join('')}
             </select>
           </div>
-          <button class="btn-refresh" onclick="loadDeals(${i})">Actualizar</button>
+          <button class="btn-refresh" onclick="loadDeals(${i})">Actualizar Datos</button>
         </div>
         <table class="deals-table">
           <thead><tr>
-            <th style="width:30%">Nombre del proyecto</th>
-            <th style="width:20%">CS asignado</th>
-            ${conformeTh}
+            <th style="width:28%">Nombre</th>
+            <th style="width:18%">Asignación Local</th>
+            ${st.hasConforme?'<th style="width:12%">Conforme</th>':''}
             <th style="width:14%">Fecha creación</th>
             <th style="width:10%">Ver en HS</th>
           </tr></thead>
-          <tbody id="tbody-${i}">
-            <tr class="loading-row"><td colspan="5">Sincronizando con HubSpot...</td></tr>
-          </tbody>
+          <tbody id="tbody-${i}"><tr class="loading-row"><td colspan="5">Sincronizando con HubSpot y BBDD...</td></tr></tbody>
         </table>
         <div class="pagination" id="pagination-${i}"></div>
       </div>
@@ -299,226 +200,204 @@ function buildViews(){
   });
 }
 
-/* ─── Tab switching ─── */
 function switchTab(i){
-  state.activeTab = i;
-  document.querySelectorAll('.tab').forEach((t,j) => t.classList.toggle('active', j===i));
-  document.querySelectorAll('.stage-view').forEach((v,j) => v.classList.toggle('active', j===i));
-  if(state.connected && state.deals[STAGES_CONFIG[i].key].length === 0) loadDeals(i);
+  state.activeTab=i;
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+  document.querySelectorAll('.stage-view').forEach((v,j)=>v.classList.toggle('active',j===i));
+  if(state.connected && state.deals[STAGES_CONFIG[i].key].length===0) loadDeals(i);
 }
 
-function onSearch(i, val){
-  state.search[STAGES_CONFIG[i].key] = val.toLowerCase();
-  state.pages[STAGES_CONFIG[i].key] = 1;
+function onSearch(i,val){
+  const key=STAGES_CONFIG[i].key;
+  state.search[key]=val.toLowerCase();
+  state.pages[key]=1;
   renderDealsTable(i);
 }
 
-function onFilterOwner(i, val){
-  state.filterOwner[STAGES_CONFIG[i].key] = val;
-  state.pages[STAGES_CONFIG[i].key] = 1;
+function onFilterOwner(i,val){
+  const key=STAGES_CONFIG[i].key;
+  state.filterOwner[key]=val;
+  state.pages[key]=1;
   renderDealsTable(i);
 }
 
-/* ─── HubSpot connection ─── */
+async function saveLocalAssignment(dealId, csName) {
+  showToast(`Guardando asignación...`);
+  try {
+    const res = await fetch('/api/hubspot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dealId: dealId, csName: csName })
+    });
+    if (res.ok) {
+      showToast(csName ? `¡Asignado a ${csName.split(' ')[0]}!` : '¡Asignación eliminada!');
+      // Actualizamos el estado local para que el filtro funcione tras asignar
+      const currentDeals = state.deals[STAGES_CONFIG[state.activeTab].key];
+      const dealToUpdate = currentDeals.find(d => d.id === dealId);
+      if(dealToUpdate) { dealToUpdate.properties.local_cs_assignment = csName; }
+    } else {
+      throw new Error('Error al conectar con BBDD');
+    }
+  } catch (e) {
+    showToast('Error al guardar en la base de datos');
+  }
+}
+
 async function connectHubSpot(){
-  setDebugStatus('Conectando...');
   try {
     await discoverPipeline();
     setConnected(true);
-    setDebugStatus('OK');
-    showToast('Conectado a HubSpot', 'ok');
+    showToast('Sincronizado');
   } catch(e){
     setConnected(false);
-    setDebugStatus('Error: '+e.message);
-    showToast('Error de conexión — abre diagnóstico para más info', 'err');
+    showToast('Error de conexión');
   }
 }
 
 async function discoverPipeline(){
-  const res = await fetch('/api/hubspot?path=crm/v3/pipelines/2-110970937');
-  if(!res.ok){
-    const txt = await res.text();
-    throw new Error('HTTP '+res.status+': '+txt.slice(0,200));
-  }
-  const data = await res.json();
-
-  /* La respuesta puede ser { results: [...] } o directamente un pipeline */
-  const pipelines = data.results || [data];
-  let found = null;
-
+  const res=await fetch('/api/hubspot?path=crm/v3/pipelines/2-110970937');
+  if(!res.ok) throw new Error('Auth error');
+  const data=await res.json();
+  const pipelines=data.results||[data];
+  let found=null;
   for(const p of pipelines){
-    const labels = (p.stages||[]).map(s => s.label.toLowerCase());
-    if(labels.some(l => l.includes('fdk') || l.includes('entrega') || l.includes('seguimiento'))){
-      found = p; break;
-    }
+    const stageLabels=(p.stages||[]).map(s=>s.label.toLowerCase());
+    if(stageLabels.some(l=>l.includes('fdk')||l.includes('entrega')||l.includes('seguimiento'))){found=p;break;}
   }
-  if(!found && pipelines.length > 0) found = pipelines[0];
-
+  if(!found && pipelines.length>0) found=pipelines[0];
   if(found){
-    state.pipelineId = found.id;
-    setDebugPipeline(found.id);
-    (found.stages||[]).forEach(s => {
-      const l = s.label.toLowerCase();
-      if(l.includes('fdk1'))           state.stageIds.fdk1 = s.id;
-      else if(l.includes('fdk2'))      state.stageIds.fdk2 = s.id;
-      else if(l.includes('fdk3'))      state.stageIds.fdk3 = s.id;
-      else if(l.includes('entrega'))   state.stageIds.entrega = s.id;
-      else if(l.includes('seguimiento')) state.stageIds.seguimiento = s.id;
+    state.pipelineId=found.id;
+    (found.stages||[]).forEach(s=>{
+      const l=s.label.toLowerCase();
+      if(l.includes('fdk1')) state.stageIds.fdk1=s.id;
+      else if(l.includes('fdk2')) state.stageIds.fdk2=s.id;
+      else if(l.includes('fdk3')) state.stageIds.fdk3=s.id;
+      else if(l.includes('entrega')) state.stageIds.entrega=s.id;
+      else if(l.includes('seguimiento')) state.stageIds.seguimiento=s.id;
     });
-    setDebugStages();
   }
-
   await loadAllCounts();
   loadDeals(state.activeTab);
 }
 
-/* ─── Counts ─── */
 async function loadAllCounts(){
-  for(let i = 0; i < STAGES_CONFIG.length; i++){
-    const st = STAGES_CONFIG[i];
+  for(let i=0;i<STAGES_CONFIG.length;i++){
+    const st=STAGES_CONFIG[i];
     try {
-      const filters = buildFilters(st.key);
-      const body = {filterGroups:[{filters}], limit:1, properties:['hs_object_id']};
-      const res = await fetch('/api/hubspot?path=crm/v3/objects/2-110970937/search',{
-        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+      const filters=buildFilters(st.key,[]);
+      const body={filterGroups:[{filters}],limit:1,properties:['hs_object_id']};
+      const res=await fetch('/api/hubspot?path=crm/v3/objects/2-110970937/search',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(body)
       });
-      const data = await res.json();
-      const count = data.total || 0;
-      state.counts[st.key] = count;
-      document.getElementById('tc-'+i).textContent = count > 999 ? (count/1000).toFixed(1)+'k' : count;
-      document.getElementById('scount-'+i).textContent = count.toLocaleString('es-ES');
+      const data=await res.json();
+      const count=data.total||0;
+      state.counts[st.key]=count;
+      document.getElementById('tc-'+i).textContent=count>999?Math.round(count/1000)+'k':count;
+      document.getElementById('scount-'+i).textContent=count.toLocaleString();
     } catch(e){}
   }
 }
 
-function buildFilters(stageKey){
-  const filters = [];
-  if(state.stageIds[stageKey])
-    filters.push({propertyName:'hs_pipeline_stage', operator:'EQ', value:state.stageIds[stageKey]});
-  if(state.pipelineId)
-    filters.push({propertyName:'hs_pipeline', operator:'EQ', value:state.pipelineId});
+function buildFilters(stageKey,extra){
+  const filters=[...extra];
+  if(state.stageIds[stageKey]){
+    filters.push({propertyName:'hs_pipeline_stage',operator:'EQ',value:state.stageIds[stageKey]});
+  }
+  if(state.pipelineId){
+    filters.push({propertyName:'hs_pipeline',operator:'EQ',value:state.pipelineId});
+  }
   return filters;
 }
 
-/* ─── Load deals (con merge Redis) ─── */
 async function loadDeals(tabIdx){
-  const st = STAGES_CONFIG[tabIdx];
-  const key = st.key;
-  const tbody = document.getElementById('tbody-'+tabIdx);
-  tbody.innerHTML = `<tr class="loading-row"><td colspan="5">Cargando proyectos...</td></tr>`;
-
+  const st=STAGES_CONFIG[tabIdx];
+  const key=st.key;
+  const tbody=document.getElementById('tbody-'+tabIdx);
+  tbody.innerHTML=`<tr class="loading-row"><td colspan="5">Sincronizando con HubSpot y BBDD...</td></tr>`;
   try {
-    const filters = buildFilters(key);
-    const ownerFilter = state.filterOwner[key];
-
-    const body = {
+    const filters=buildFilters(key,[]);
+    const body={
       filterGroups:[{filters}],
-      limit: 100,
-      properties:['dealname','hubspot_owner_id','createdate','conforme__kit_digital_'],
-      sorts:[{propertyName:'createdate', direction:'DESCENDING'}]
+      limit:100,
+      properties:['dealname','createdate','conforme__kit_digital_'],
+      sorts:[{propertyName:'createdate',direction:'DESCENDING'}]
     };
-
-    const res = await fetch('/api/hubspot?path=crm/v3/objects/2-110970937/search',{
-      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
-    });
-    const data = await res.json();
-    let deals = data.results || [];
-
-    /* Merge con asignaciones locales de Redis */
-    deals = await mergeRedisAssignments(deals);
-
-    /* Filtros locales */
-    const searchFilter = state.search[key];
-    if(searchFilter) deals = deals.filter(d => (d.properties.dealname||'').toLowerCase().includes(searchFilter));
-    if(ownerFilter)  deals = deals.filter(d => d.properties.local_cs === ownerFilter);
-
-    state.deals[key] = deals;
-    state.pages[key] = 1;
-    renderDealsTable(tabIdx);
-    updateStageStats(tabIdx, deals);
-
-  } catch(e){
-    tbody.innerHTML = `<tr class="empty-row"><td colspan="5">Error al cargar proyectos: ${e.message}</td></tr>`;
-  }
-}
-
-/* Pide al backend las asignaciones Redis para los deals cargados */
-async function mergeRedisAssignments(deals){
-  if(!deals.length) return deals;
-  try {
-    const ids = deals.map(d => d.id);
-    const res = await fetch('/api/hubspot?_action=get-assignments', {
+    
+    // El backend se encarga de cruzar los datos de HubSpot con los de Upstash Redis
+    const res=await fetch('/api/hubspot?path=crm/v3/objects/2-110970937/search',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ids})
+      body:JSON.stringify(body)
     });
-    if(!res.ok) return deals;
-    const map = await res.json(); /* { dealId: csName, ... } */
-    return deals.map(d => ({
-      ...d,
-      properties: {
-        ...d.properties,
-        local_cs: map[d.id] || d.properties.hubspot_owner_id || ''
-      }
-    }));
+    
+    const data=await res.json();
+    state.deals[key] = data.results || [];
+    state.pages[key] = 1;
+    renderDealsTable(tabIdx);
   } catch(e){
-    /* Si Redis falla, mostramos igualmente los deals sin asignación local */
-    return deals.map(d => ({...d, properties:{...d.properties, local_cs: d.properties.hubspot_owner_id||''}}));
+    tbody.innerHTML=`<tr class="empty-row"><td colspan="5">Error al cargar proyectos.</td></tr>`;
   }
 }
 
-/* ─── Render table ─── */
 function renderDealsTable(tabIdx){
-  const st = STAGES_CONFIG[tabIdx];
-  const key = st.key;
-  const deals = state.deals[key] || [];
-  const page = state.pages[key] || 1;
-  const paginated = deals.slice((page-1)*PAGE_SIZE, page*PAGE_SIZE);
-  const tbody = document.getElementById('tbody-'+tabIdx);
+  const st=STAGES_CONFIG[tabIdx];
+  const key=st.key;
+  let deals=state.deals[key]||[];
+  
+  // Aplicamos búsqueda y filtros localmente
+  const searchFilter=state.search[key];
+  const ownerFilter=state.filterOwner[key];
+  
+  if(searchFilter) {
+    deals = deals.filter(d=>(d.properties.dealname||'').toLowerCase().includes(searchFilter));
+  }
+  if(ownerFilter) {
+    deals = deals.filter(d=>(d.properties.local_cs_assignment === ownerFilter));
+  }
 
-  if(!deals.length){
-    tbody.innerHTML = `<tr class="empty-row"><td colspan="5">No se encontraron proyectos</td></tr>`;
-    document.getElementById('pagination-'+tabIdx).innerHTML = '';
+  const page=state.pages[key]||1;
+  const start=(page-1)*PAGE_SIZE, end=start+PAGE_SIZE;
+  const paginated=deals.slice(start,end);
+  const tbody=document.getElementById('tbody-'+tabIdx);
+  const cols=st.hasConforme?5:4;
+
+  if(deals.length===0){
+    tbody.innerHTML=`<tr class="empty-row"><td colspan="${cols}">No se encontraron proyectos con ese filtro</td></tr>`;
+    document.getElementById('pagination-'+tabIdx).innerHTML='';
     return;
   }
 
-  const csOptions = CS_SPAIN.map(n =>
-    `<option value="${n}">${n}</option>`
-  ).join('');
-
-  tbody.innerHTML = paginated.map(deal => {
-    const name    = deal.properties.dealname || 'Sin nombre';
-    const localCs = deal.properties.local_cs || '';
-    const date    = deal.properties.createdate ? deal.properties.createdate.slice(0,10) : '—';
-    const isConf  = deal.properties['conforme__kit_digital_'] === 'true'
-                 || deal.properties['conforme__kit_digital_'] === '1';
-
-    const conformeTd = st.hasConforme
-      ? `<td><span class="conforme-btn ${isConf?'yes':'no'}">${isConf?'Conforme':'Pendiente'}</span></td>`
-      : '';
-
-    const selectDisabled = st.readOnly ? 'disabled' : '';
-    const savedClass = localCs ? ' saved' : '';
+  tbody.innerHTML=paginated.map(deal=>{
+    const name=deal.properties.dealname||'Sin nombre';
+    // Leemos la propiedad inyectada por nuestro backend de Vercel/Redis
+    const localOwner=deal.properties.local_cs_assignment||'';
+    const date=deal.properties.createdate?deal.properties.createdate.slice(0,10):'—';
+    const isConforme=deal.properties['conforme__kit_digital_']==='true'||deal.properties['conforme__kit_digital_']==='1';
+    
+    const conformeBtn=st.hasConforme?`<td><button class="conforme-btn ${isConforme?'yes':'no'}" title="El conforme se gestiona en HubSpot">${isConforme?'Conforme':'Pendiente'}</button></td>`:'';
+    
+    // Si es FDK1, no dejamos asignar localmente. Si no, sí.
+    const selectBox = st.readOnly 
+      ? `<select class="owner-select" disabled><option>Solo lectura</option></select>`
+      : `<select class="owner-select" onchange="saveLocalAssignment('${deal.id}', this.value)" title="Esta asignación se guarda para todos los compañeros">
+          <option value="">Sin asignar</option>
+          ${CS_SPAIN.map(n=>`<option value="${n}" ${localOwner===n?'selected':''}>${n}</option>`).join('')}
+        </select>`;
 
     return `<tr>
-      <td class="deal-name" title="${name}">${name.length>38 ? name.slice(0,38)+'…' : name}</td>
-      <td>
-        <select class="owner-select${savedClass}" ${selectDisabled}
-          onchange="saveAssignment('${deal.id}', this.value, this)"
-          title="${st.readOnly ? 'Solo lectura' : 'Asignar CS'}">
-          <option value="">Sin asignar</option>
-          ${CS_SPAIN.map(n => `<option value="${n}" ${localCs===n?'selected':''}>${n}</option>`).join('')}
-        </select>
-      </td>
-      ${conformeTd}
+      <td class="deal-name" title="${name}">${name.length>35?name.slice(0,35)+'…':name}</td>
+      <td>${selectBox}</td>
+      ${conformeBtn}
       <td style="color:#888">${date}</td>
-      <td><a class="hubspot-link" href="https://app-eu1.hubspot.com/contacts/25808060/record/2-110970937/${deal.id}" target="_blank">Ver ↗</a></td>
+      <td><a class="hubspot-link" href="https://app-eu1.hubspot.com/contacts/25808060/record/2-110970937/${deal.id}" target="_blank">Modificar ↗</a></td>
     </tr>`;
   }).join('');
 
-  const totalPages = Math.ceil(deals.length / PAGE_SIZE);
-  document.getElementById('pagination-'+tabIdx).innerHTML = `
-    <span>${deals.length.toLocaleString('es-ES')} proyectos · Página ${page} de ${totalPages}</span>
+  const totalPages=Math.ceil(deals.length/PAGE_SIZE);
+  const pag=document.getElementById('pagination-'+tabIdx);
+  pag.innerHTML=`<span>${deals.length} proyectos filtrados · Página ${page} de ${totalPages||1}</span>
     <div class="page-btns">
       <button class="page-btn" onclick="changePage(${tabIdx},-1)" ${page<=1?'disabled':''}>← Ant</button>
       <button class="page-btn active">${page}</button>
@@ -526,67 +405,27 @@ function renderDealsTable(tabIdx){
     </div>`;
 }
 
-function changePage(tabIdx, dir){
-  const key = STAGES_CONFIG[tabIdx].key;
-  const total = Math.ceil((state.deals[key]||[]).length / PAGE_SIZE);
-  state.pages[key] = Math.max(1, Math.min(total, (state.pages[key]||1) + dir));
+function changePage(tabIdx,dir){
+  const key=STAGES_CONFIG[tabIdx].key;
+  const deals=state.deals[key]||[];
+  const totalPages=Math.ceil(deals.length/PAGE_SIZE);
+  state.pages[key]=Math.max(1,Math.min(totalPages,(state.pages[key]||1)+dir));
   renderDealsTable(tabIdx);
 }
 
-/* ─── Save assignment to Redis via backend ─── */
-async function saveAssignment(dealId, csName, selectEl){
-  selectEl.classList.remove('saved');
-  showToast('Guardando...');
-  try {
-    const res = await fetch('/api/hubspot', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({dealId, csName})
-    });
-    if(!res.ok){
-      const txt = await res.text();
-      throw new Error('HTTP '+res.status+': '+txt.slice(0,100));
-    }
-    if(csName) selectEl.classList.add('saved');
-    showToast(csName ? `Asignado a ${csName.split(' ')[0]}` : 'Asignación eliminada', 'ok');
-
-    /* Actualiza el deal en memoria */
-    for(const key of Object.keys(state.deals)){
-      const deal = state.deals[key].find(d => d.id === dealId);
-      if(deal){ deal.properties.local_cs = csName; break; }
-    }
-    updateStageStats(state.activeTab, state.deals[STAGES_CONFIG[state.activeTab].key]);
-
-  } catch(e){
-    showToast('Error al guardar: '+e.message, 'err');
-    console.error(e);
-  }
-}
-
-/* ─── Stats ─── */
-function updateStageStats(tabIdx, deals){
-  const st = STAGES_CONFIG[tabIdx];
-  const assigned = deals.filter(d => d.properties.local_cs).length;
-  document.getElementById('sassigned-'+tabIdx).textContent = assigned;
-  if(st.hasConforme){
-    const conformes = deals.filter(d =>
-      d.properties['conforme__kit_digital_'] === 'true' ||
-      d.properties['conforme__kit_digital_'] === '1'
-    ).length;
-    document.getElementById('sconforme-'+tabIdx).textContent = conformes;
-  }
-}
-
-/* ─── Connection status ─── */
 function setConnected(ok){
-  state.connected = ok;
-  document.getElementById('conn-dot').className = 'conn-dot ' + (ok ? 'ok' : 'err');
-  document.getElementById('conn-label').textContent = ok ? 'Sincronizado con HubSpot' : 'Error de conexión';
+  state.connected=ok;
+  const dot = document.getElementById('conn-dot');
+  dot.className='conn-dot '+(ok?'ok':'err');
+  document.getElementById('conn-label').textContent=ok?'Sincronizado (HubSpot + Upstash)':'Error de conexión';
 }
 
-/* ─── Init ─── */
-buildViews();
-connectHubSpot();
+function init(){
+  buildViews();
+  connectHubSpot();
+}
+
+init();
 </script>
 </body>
 </html>

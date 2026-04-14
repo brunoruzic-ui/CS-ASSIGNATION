@@ -312,7 +312,7 @@ async function connectHubSpot(){
   const btn=document.getElementById('btn-connect');
   btn.disabled=true; btn.textContent='Conectando...';
   try {
-    const res=await fetch('https://api.hubapi.com/crm/v3/pipelines/deals',{
+    const res=await fetch('/api/hubspot?path=crm/v3/pipelines/deals',{
       headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}
     });
     if(!res.ok) throw new Error('Auth error');
@@ -330,7 +330,7 @@ async function connectHubSpot(){
 
 async function discoverPipeline(token){
   try {
-    const res=await fetch('https://api.hubapi.com/crm/v3/pipelines/2-110970937',{
+    const res=await fetch('/api/hubspot?path=crm/v3/pipelines/2-110970937',{
       headers:{'Authorization':'Bearer '+token}
     });
     const data=await res.json();

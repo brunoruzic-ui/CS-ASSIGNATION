@@ -157,10 +157,16 @@ function buildViews(){
           <div class="deals-header-left">
             <span class="deals-title">Proyectos</span>
             <input class="search-input" placeholder="Buscar proyecto..." oninput="onSearch(${i},this.value)" id="search-${i}"/>
-            <select class="filter-select" onchange="onFilterOwner(${i},this.value)" id="fowner-${i}">
-              <option value="">Todos los CS</option>
-              ${CS_SPAIN.map(n=>`<option value="${n}">${n}</option>`).join('')}
-            </select>
+            <td>
+              <select class="owner-select" onchange="saveLocalAssignment('${deal.id}', this.value)" title="Asignación colaborativa en tiempo real">
+                <option value="">Sin asignar</option>
+                ${CS_SPAIN.map(n => `
+                  <option value="${n}" ${deal.properties.local_cs_assignment === n ? 'selected' : ''}>
+                    ${n.split(' ')[0]}
+                  </option>
+                `).join('')}
+              </select>
+            </td>
           </div>
           <button class="btn-refresh" onclick="loadDeals(${i})">Actualizar Datos</button>
         </div>
@@ -380,6 +386,24 @@ function setConnected(ok){
 function init(){
   buildViews();
   connectHubSpot();
+}
+
+  async function saveLocalAssignment(dealId, csName) {
+  showToast(`Asignando...`);
+  try {
+    const res = await fetch('/api/hubspot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dealId, csName })
+    });
+    if (res.ok) {
+      showToast(`¡Asignado a ${csName || 'nadie'}!`);
+    } else {
+      throw new Error();
+    }
+  } catch (e) {
+    showToast('Error al guardar en la base de datos');
+  }
 }
 
 init();

@@ -140,8 +140,15 @@ function initUI() {
 }
 
 async function assignCS(stageId, name) {
+    // PARCHE DE SEGURIDAD: Comprobar si el nombre arrastrado es válido
+    if (!CS_TEAM.includes(name)) {
+        console.warn("Intento bloqueado: arrastraste texto no válido ->", name);
+        return; // Detiene la función y no guarda nada
+    }
+
     if (!state.assignments[stageId]) state.assignments[stageId] = [];
     if (state.assignments[stageId].includes(name)) return;
+    
     state.assignments[stageId].push(name);
     renderAssignments();
     saveToDB(stageId);

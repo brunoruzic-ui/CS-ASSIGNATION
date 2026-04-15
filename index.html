@@ -184,6 +184,15 @@ function renderAssignments() {
     });
 }
 
+function groupByStage(items) {
+  return items.reduce((acc, item) => {
+    const stage = item.properties.hs_pipeline_stage || 'unknown';
+    if (!acc[stage]) acc[stage] = [];
+    acc[stage].push(item);
+    return acc;
+  }, {});
+}
+
 async function saveToDB(stageId) {
     try {
         const res = await fetch('/api/hubspot', {
@@ -209,27 +218,31 @@ async function syncData() {
             renderAssignments();
             document.getElementById('dot-db').className = 'dot active';
         } else { throw new Error(); }
-    } catch (e) { document.getElementById('dot-db').className = 'dot error'; }
+    } catch (e) { 
+        document.getElementById('dot-db').className = 'dot error'; 
+    }
 
-    // 2. Cargar Conteos Reales de HubSpot
-    STAGES.forEach(async (s) => {
-        try {
-            const body = {
-                filterGroups: [{ filters: [{ propertyName: 'hs_pipeline_stage', operator: 'EQ', value: s.hs_id }] }],
-                limit: 1
-            };
-            const res = await fetch('/api/hubspot?path=crm/v3/objects/2-110970937/search', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(body)
-            });
-            if (res.ok) {
-                const data = await res.json();
-                document.getElementById(`count-${s.id}`).textContent = data.total || 0;
-                document.getElementById('dot-hs').className = 'dot active';
-            } else { throw new Error(); }
-        } catch (e) { document.getElementById('dot-hs').className = 'dot error'; }
-    });
+    // 🔥 2. Cargar TODOS los proyectos de HubSpot (UNA SOLA VEZ)
+    try {
+        const res = await fetch('/api/hubspot?action=getProjects');
+
+        if (!res.ok) throw new Error();
+
+        const data = await res.json();
+
+        const grouped = groupByStage(data.results);
+
+        // pintar counts por columna
+        STAGES.forEach(s => {
+            const count = grouped[s.hs_id]?.length || 0;
+            document.getElementById(`count-${s.id}`).textContent = count;
+        });
+
+        document.getElementById('dot-hs').className = 'dot active';
+
+    } catch (e) {
+        document.getElementById('dot-hs').className = 'dot error';
+    }
 }
 
 initUI();

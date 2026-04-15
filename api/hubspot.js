@@ -44,6 +44,53 @@ export default async function handler(req, res) {
     }
 
     // --- LÓGICA DE HUBSPOT ---
+    if (action === 'getProjects') {
+  const cacheKey = 'hubspot:projects:all';
+
+  // 1. Intentar cache
+  const cached = await fetch(`${redisUrl}/get/${cacheKey}`, {
+    headers: { Authorization: `Bearer ${redisToken}` }
+  });
+
+  const cachedData = await cached.json();
+
+  if (cachedData.result) {
+    try {
+      const parsed = JSON.parse(cachedData.result);
+      return res.status(200).json(parsed);
+    } catch (e) {}
+  }
+
+  // 2. Fetch real a HubSpot (UNA SOLA VEZ)
+  const hsResponse = await fetch(
+    `https://api.hubapi.com/crm/v3/objects/2-XXXX/search`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${hubspotToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        properties: ['dealname', 'hs_pipeline_stage', 'hubspot_owner_id'],
+        limit: 100
+      })
+    }
+  );
+
+  const data = await hsResponse.json();
+
+  // 3. Guardar en cache (30 min)
+  await fetch(`${redisUrl}/set/${cacheKey}`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${redisToken}` },
+    body: JSON.stringify({
+      value: JSON.stringify(data),
+      ex: 1800 // 30 minutos
+    })
+  });
+
+  return res.status(200).json(data);
+}
     if (path) {
       const hsResponse = await fetch(`https://api.hubapi.com/${path}`, {
         method: req.method,
@@ -64,4 +111,5 @@ export default async function handler(req, res) {
     console.error(error);
     return res.status(500).json({ error: "Error interno del servidor", details: error.message });
   }
+  
 }

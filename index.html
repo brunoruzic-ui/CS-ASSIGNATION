@@ -157,7 +157,18 @@ function renderAssignments() {
     STAGES.forEach(s => {
         const zone = document.getElementById(`zone-${s.id}`);
         zone.innerHTML = '';
-        (state.assignments[s.id] || []).forEach(name => {
+        
+        // PARCHE DE SEGURIDAD: Forzamos a que siempre sea una lista válida
+        let members = state.assignments[s.id] || [];
+        if (typeof members === 'string') {
+            try { members = JSON.parse(members); } catch(e) { members = []; }
+        }
+        if (!Array.isArray(members)) members = [];
+        
+        // Limpiamos el estado en vivo
+        state.assignments[s.id] = members;
+
+        members.forEach(name => {
             const div = document.createElement('div');
             div.className = 'assigned-cs';
             div.innerHTML = `<span>${name}</span><span class="remove-btn" onclick="removeCS('${s.id}', '${name}')">×</span>`;

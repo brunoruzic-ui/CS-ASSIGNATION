@@ -1,10 +1,8 @@
 export default async function handler(req, res) {
-  // Asegúrate de que estas variables existen en Vercel
   const hubspotToken = process.env.HUBSPOT_TOKEN;
   const redisUrl = process.env.KV_REST_API_URL;
   const redisToken = process.env.KV_REST_API_TOKEN;
 
-  // 1. Manejo de errores de configuración
   if (!redisUrl || !redisToken) {
     return res.status(500).json({ error: "Faltan variables KV en Vercel" });
   }
@@ -21,7 +19,16 @@ export default async function handler(req, res) {
           headers: { Authorization: `Bearer ${redisToken}` }
         });
         const d = await r.json();
-        results[s] = d.result ? JSON.parse(d.result) : [];
+        
+        // Lector seguro: Arregla los datos corruptos antiguos
+        let parsed = [];
+        if (d.result) {
+            try {
+                parsed = typeof d.result === 'string' ? JSON.parse(d.result) : d.result;
+                if (typeof parsed === 'string') parsed = JSON.parse(parsed);
+            } catch (e) { parsed = []; }
+        }
+        results[s] = Array.isArray(parsed) ? parsed : [];
       }
       return res.status(200).json(results);
     }
@@ -30,7 +37,8 @@ export default async function handler(req, res) {
       await fetch(`${redisUrl}/set/stage_members:${req.body.stageId}`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${redisToken}` },
-        body: JSON.stringify(JSON.stringify(req.body.members))
+        // CORRECCIÓN: Un solo stringify para no romper la lista
+        body: JSON.stringify(req.body.members)
       });
       return res.status(200).json({ ok: true });
     }
@@ -43,7 +51,6 @@ export default async function handler(req, res) {
           'Authorization': `Bearer ${hubspotToken}`,
           'Content-Type': 'application/json'
         },
-        // Enviamos el body solo si existe (para el search)
         body: req.method === 'POST' ? JSON.stringify(req.body) : undefined
       });
 

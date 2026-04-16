@@ -81,16 +81,17 @@ body{background: var(--bg); display: flex; flex-direction: column; height: 100vh
             Mueve a los CS a las columnas para asignar carga de trabajo.
         </p>
     </div>
-
     <div class="content" id="stages-container"></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
+// --- SEGURIDAD ---
+const API_KEY = "Orbidi-CustomerSuccessTenerife2026";
+
 const CS_TEAM = ["Bruno Ruzic","Elena Chico","José Luis","María Requena",];
 
-// Necesitas los IDs internos reales de tus etapas en HubSpot para que el conteo funcione
 const STAGES = [
     {id: 'fdk1', label: 'FDK 1', hs_id: '593899722'}, 
     {id: 'fdk2', label: 'FDK 2', hs_id: '593899724'},
@@ -140,12 +141,7 @@ function initUI() {
 }
 
 async function assignCS(stageId, name) {
-    // PARCHE DE SEGURIDAD: Comprobar si el nombre arrastrado es válido
-    if (!CS_TEAM.includes(name)) {
-        console.warn("Intento bloqueado: arrastraste texto no válido ->", name);
-        return; // Detiene la función y no guarda nada
-    }
-
+    if (!CS_TEAM.includes(name)) return;
     if (!state.assignments[stageId]) state.assignments[stageId] = [];
     if (state.assignments[stageId].includes(name)) return;
     
@@ -164,15 +160,11 @@ function renderAssignments() {
     STAGES.forEach(s => {
         const zone = document.getElementById(`zone-${s.id}`);
         zone.innerHTML = '';
-        
-        // PARCHE DE SEGURIDAD: Forzamos a que siempre sea una lista válida
         let members = state.assignments[s.id] || [];
         if (typeof members === 'string') {
             try { members = JSON.parse(members); } catch(e) { members = []; }
         }
         if (!Array.isArray(members)) members = [];
-        
-        // Limpiamos el estado en vivo
         state.assignments[s.id] = members;
 
         members.forEach(name => {
@@ -197,7 +189,10 @@ async function saveToDB(stageId) {
     try {
         const res = await fetch('/api/hubspot', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': API_KEY // <--- LLAVE DE SEGURIDAD
+            },
             body: JSON.stringify({ action: 'saveStageAssignment', stageId: stageId, members: state.assignments[stageId] })
         });
         if(res.ok) {
@@ -210,9 +205,11 @@ async function saveToDB(stageId) {
 }
 
 async function syncData() {
-    // 1. Cargar Asignaciones de la BBDD (Vercel/Redis)
+    // 1. Cargar Asignaciones de la BBDD
     try {
-        const redisRes = await fetch('/api/hubspot?action=loadAllAssignments');
+        const redisRes = await fetch('/api/hubspot?action=loadAllAssignments', {
+            headers: { 'x-api-key': API_KEY } // <--- LLAVE DE SEGURIDAD
+        });
         if (redisRes.ok) {
             state.assignments = await redisRes.json();
             renderAssignments();
@@ -222,17 +219,16 @@ async function syncData() {
         document.getElementById('dot-db').className = 'dot error'; 
     }
 
-    // 🔥 2. Cargar TODOS los proyectos de HubSpot (UNA SOLA VEZ)
+    // 2. Cargar Proyectos de HubSpot
     try {
-        const res = await fetch('/api/hubspot?action=getProjects');
+        const res = await fetch('/api/hubspot?action=getProjects', {
+            headers: { 'x-api-key': API_KEY } // <--- LLAVE DE SEGURIDAD
+        });
 
         if (!res.ok) throw new Error();
-
         const data = await res.json();
+        const grouped = groupByStage(data.results || []);
 
-        const grouped = groupByStage(data.results);
-
-        // pintar counts por columna
         STAGES.forEach(s => {
             const count = grouped[s.hs_id]?.length || 0;
             document.getElementById(`count-${s.id}`).textContent = count;

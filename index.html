@@ -128,23 +128,103 @@ const STAGES = [
 let state = { assignments: {}, counts: {} };
 
 // --- LÓGICA DE ACCESO ---
-function checkLogin() {
-    const input = document.getElementById('pass-input').value;
-    if (input === WEB_PASSWORD) {
-        localStorage.setItem('orbidi_auth', 'true'); // Guardar sesión
-        document.getElementById('login-overlay').style.display = 'none';
-        initApp(); // Arrancar la app
-    } else {
+async function checkLogin() {
+    const inputPassword = document.getElementById('pass-input').value;
+    
+    // Intentamos una petición de prueba para ver si la contraseña es la llave correcta
+    try {
+        const res = await fetch('/api/hubspot?action=loadAllAssignments', {
+            headers: { 'x-api-key': inputPassword }
+        });
+
+        if (res.ok) {
+            // Si el servidor acepta la contraseña, la guardamos como nuestra llave maestra
+            localStorage.setItem('orbidi_key', inputPassword);
+            document.getElementById('login-overlay').style.display = 'none';
+            initApp();
+        } else {
+            throw new Error("Llave incorrecta");
+        }
+    } catch (e) {
         document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-error').textContent = "Contraseña incorrecta o error de conexión.";
     }
 }
 
-// Al cargar la página, ver si ya estaba logueado
 window.onload = () => {
-    if (localStorage.getItem('orbidi_auth') === 'true') {
+    // Si ya hay una llave guardada, intentamos arrancar
+    if (localStorage.getItem('orbidi_key')) {
         document.getElementById('login-overlay').style.display = 'none';
         initApp();
     }
+}
+
+function initApp() {
+    initUI();
+    syncData();
+}
+
+// --- COMUNICACIÓN CON EL SERVIDOR ---
+
+async function saveToDB(stageId) {
+    const key = localStorage.getItem('orbidi_key');
+    try {
+        const res = await fetch('/api/hubspot', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'x-api-key': key // Enviamos la llave que puso el usuario
+            },
+            body: JSON.stringify({ action: 'saveStageAssignment', stageId: stageId, members: state.assignments[stageId] })
+        });
+        if(res.ok) {
+            document.getElementById('dot-db').className = 'dot active';
+            showToast("Guardado en BBDD Vercel");
+        } else {
+            // Si por alguna razón la llave ya no vale (se cambió en Vercel)
+            logout();
+        }
+    } catch (e) { document.getElementById('dot-db').className = 'dot error'; }
+}
+
+async function syncData() {
+    const key = localStorage.getItem('orbidi_key');
+    
+    // Cargar Asignaciones
+    try {
+        const redisRes = await fetch('/api/hubspot?action=loadAllAssignments', {
+            headers: { 'x-api-key': key }
+        });
+        if (redisRes.ok) {
+            state.assignments = await redisRes.json();
+            renderAssignments();
+            document.getElementById('dot-db').className = 'dot active';
+        } else { logout(); }
+    } catch (e) { document.getElementById('dot-db').className = 'dot error'; }
+
+    // Cargar Proyectos HubSpot
+    try {
+        const res = await fetch('/api/hubspot?action=getProjects', {
+            headers: { 'x-api-key': key }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const counts = {};
+            (data.results || []).forEach(item => {
+                const st = item.properties.hs_pipeline_stage;
+                counts[st] = (counts[st] || 0) + 1;
+            });
+            STAGES.forEach(s => {
+                document.getElementById(`count-${s.id}`).textContent = counts[s.hs_id] || 0;
+            });
+            document.getElementById('dot-hs').className = 'dot active';
+        }
+    } catch (e) { document.getElementById('dot-hs').className = 'dot error'; }
+}
+
+function logout() {
+    localStorage.removeItem('orbidi_key');
+    location.reload();
 }
 
 function initApp() {

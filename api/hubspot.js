@@ -1,10 +1,13 @@
 export default async function handler(req, res) {
-  const internalKey = req.headers['x-api-key']; // Leemos la llave que viene del frontal
+  // --- 1. CAPA DE SEGURIDAD (El Portero) ---
+  const internalKey = req.headers['x-api-key']; // Leemos la llave
   
   if (internalKey !== process.env.INTERNAL_API_KEY) {
-    return res.status(401).json({ error: "No autorizado. Intento bloqueado." });
+    // Si no hay llave o es incorrecta, devolvemos un 401 limpio y cortamos la ejecución
+    return res.status(401).json({ error: "No autorizado. Intento bloqueado por falta de credenciales internas." });
   }
-export default async function handler(req, res) {
+
+  // --- 2. CONFIGURACIÓN (Si pasamos el portero) ---
   const hubspotToken = process.env.HUBSPOT_TOKEN;
   const redisUrl = process.env.KV_REST_API_URL;
   const redisToken = process.env.KV_REST_API_TOKEN;
@@ -43,7 +46,6 @@ export default async function handler(req, res) {
       await fetch(`${redisUrl}/set/stage_members:${req.body.stageId}`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${redisToken}` },
-        // CORRECCIÓN: Un solo stringify para no romper la lista
         body: JSON.stringify(req.body.members)
       });
       return res.status(200).json({ ok: true });
@@ -51,52 +53,53 @@ export default async function handler(req, res) {
 
     // --- LÓGICA DE HUBSPOT ---
     if (action === 'getProjects') {
-  const cacheKey = 'hubspot:projects:all';
+      const cacheKey = 'hubspot:projects:all';
 
-  // 1. Intentar cache
-  const cached = await fetch(`${redisUrl}/get/${cacheKey}`, {
-    headers: { Authorization: `Bearer ${redisToken}` }
-  });
+      // 1. Intentar cache
+      const cached = await fetch(`${redisUrl}/get/${cacheKey}`, {
+        headers: { Authorization: `Bearer ${redisToken}` }
+      });
 
-  const cachedData = await cached.json();
+      const cachedData = await cached.json();
 
-  if (cachedData.result) {
-    try {
-      const parsed = JSON.parse(cachedData.result);
-      return res.status(200).json(parsed);
-    } catch (e) {}
-  }
+      if (cachedData.result) {
+        try {
+          const parsed = JSON.parse(cachedData.result);
+          return res.status(200).json(parsed);
+        } catch (e) {}
+      }
 
-  // 2. Fetch real a HubSpot (UNA SOLA VEZ)
-  const hsResponse = await fetch(
-    `https://api.hubapi.com/crm/v3/objects/2-XXXX/search`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${hubspotToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        properties: ['dealname', 'hs_pipeline_stage', 'hubspot_owner_id'],
-        limit: 100
-      })
+      // 2. Fetch real a HubSpot (UNA SOLA VEZ)
+      const hsResponse = await fetch(
+        `https://api.hubapi.com/crm/v3/objects/2-XXXX/search`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${hubspotToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            properties: ['dealname', 'hs_pipeline_stage', 'hubspot_owner_id'],
+            limit: 100
+          })
+        }
+      );
+
+      const data = await hsResponse.json();
+
+      // 3. Guardar en cache (30 min)
+      await fetch(`${redisUrl}/set/${cacheKey}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${redisToken}` },
+        body: JSON.stringify({
+          value: JSON.stringify(data),
+          ex: 1800 // 30 minutos
+        })
+      });
+
+      return res.status(200).json(data);
     }
-  );
-
-  const data = await hsResponse.json();
-
-  // 3. Guardar en cache (30 min)
-  await fetch(`${redisUrl}/set/${cacheKey}`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${redisToken}` },
-    body: JSON.stringify({
-      value: JSON.stringify(data),
-      ex: 1800 // 30 minutos
-    })
-  });
-
-  return res.status(200).json(data);
-}
+    
     if (path) {
       const hsResponse = await fetch(`https://api.hubapi.com/${path}`, {
         method: req.method,
@@ -117,5 +120,4 @@ export default async function handler(req, res) {
     console.error(error);
     return res.status(500).json({ error: "Error interno del servidor", details: error.message });
   }
-  
 }

@@ -87,8 +87,8 @@ body{background: var(--bg); display: flex; flex-direction: column; height: 100vh
 <div class="toast" id="toast"></div>
 
 <script>
-// --- SEGURIDAD ---
-const API_KEY = "Orbidi-CustomerSuccessTenerife2026";
+// --- CONFIGURACIÓN DE SEGURIDAD ---
+const INTERNAL_KEY = "Orbidi-CustomerSuccessTenerife2026";
 
 const CS_TEAM = ["Bruno Ruzic","Elena Chico","José Luis","María Requena",];
 
@@ -141,7 +141,11 @@ function initUI() {
 }
 
 async function assignCS(stageId, name) {
-    if (!CS_TEAM.includes(name)) return;
+    if (!CS_TEAM.includes(name)) {
+        console.warn("Intento bloqueado: arrastraste texto no válido ->", name);
+        return;
+    }
+
     if (!state.assignments[stageId]) state.assignments[stageId] = [];
     if (state.assignments[stageId].includes(name)) return;
     
@@ -191,7 +195,7 @@ async function saveToDB(stageId) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': API_KEY // <--- LLAVE DE SEGURIDAD
+                'x-api-key': INTERNAL_KEY // <--- CABECERA DE SEGURIDAD AÑADIDA
             },
             body: JSON.stringify({ action: 'saveStageAssignment', stageId: stageId, members: state.assignments[stageId] })
         });
@@ -205,10 +209,10 @@ async function saveToDB(stageId) {
 }
 
 async function syncData() {
-    // 1. Cargar Asignaciones de la BBDD
+    // 1. Cargar Asignaciones de la BBDD (Vercel/Redis)
     try {
         const redisRes = await fetch('/api/hubspot?action=loadAllAssignments', {
-            headers: { 'x-api-key': API_KEY } // <--- LLAVE DE SEGURIDAD
+            headers: { 'x-api-key': INTERNAL_KEY } // <--- SEGURIDAD AÑADIDA
         });
         if (redisRes.ok) {
             state.assignments = await redisRes.json();
@@ -222,10 +226,11 @@ async function syncData() {
     // 2. Cargar Proyectos de HubSpot
     try {
         const res = await fetch('/api/hubspot?action=getProjects', {
-            headers: { 'x-api-key': API_KEY } // <--- LLAVE DE SEGURIDAD
+            headers: { 'x-api-key': INTERNAL_KEY } // <--- SEGURIDAD AÑADIDA
         });
 
         if (!res.ok) throw new Error();
+
         const data = await res.json();
         const grouped = groupByStage(data.results || []);
 

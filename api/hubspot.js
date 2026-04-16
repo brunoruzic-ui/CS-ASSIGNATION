@@ -1,4 +1,10 @@
 export default async function handler(req, res) {
+  const internalKey = req.headers['x-api-key']; // Leemos la llave que viene del frontal
+  
+  if (internalKey !== process.env.INTERNAL_API_KEY) {
+    return res.status(401).json({ error: "No autorizado. Intento bloqueado." });
+  }
+export default async function handler(req, res) {
   const hubspotToken = process.env.HUBSPOT_TOKEN;
   const redisUrl = process.env.KV_REST_API_URL;
   const redisToken = process.env.KV_REST_API_TOKEN;

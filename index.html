@@ -9,7 +9,29 @@
 *{box-sizing:border-box; margin:0; padding:0; font-family:'Inter', sans-serif;}
 body{background: var(--bg); display: flex; flex-direction: column; height: 100vh; overflow: hidden;}
 
-/* Header con Doble Status */
+/* --- ESTILOS DEL LOGIN (EL MURO) --- */
+#login-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--primary); display: flex; flex-direction: column;
+    justify-content: center; align-items: center; z-index: 9999; color: white;
+}
+.login-box {
+    background: rgba(255,255,255,0.05); padding: 40px; border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.1); text-align: center; width: 320px;
+}
+.login-box .logo { font-size: 24px; margin-bottom: 20px; display: inline-block; }
+.login-box input {
+    width: 100%; padding: 12px; border-radius: 8px; border: none;
+    margin-bottom: 15px; background: white; color: #333; font-size: 16px;
+}
+.login-box button {
+    width: 100%; padding: 12px; border-radius: 8px; border: none;
+    background: var(--accent); color: white; font-weight: bold; cursor: pointer; transition: 0.3s;
+}
+.login-box button:hover { background: #ff4d5d; transform: scale(1.02); }
+#login-error { color: var(--accent); font-size: 12px; margin-top: 10px; display: none; }
+
+/* --- ESTILOS DE LA WEB (LO QUE YA TENÍAS) --- */
 .header{background: var(--primary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; color: white;}
 .logo{background: var(--accent); padding: 4px 8px; border-radius: 4px; font-weight: 800; font-size: 12px; letter-spacing: 1px;}
 .status-container { display: flex; gap: 20px; }
@@ -18,7 +40,6 @@ body{background: var(--bg); display: flex; flex-direction: column; height: 100vh
 .dot.active { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
 .dot.error { background: var(--err); box-shadow: 0 0 8px var(--err); }
 
-/* Layout */
 .main-container { display: flex; flex: 1; overflow: hidden; }
 .sidebar { width: 240px; background: white; border-right: 1px solid #ddd; padding: 20px; display: flex; flex-direction: column; }
 .sidebar h3 { font-size: 11px; text-transform: uppercase; color: #aaa; margin-bottom: 15px; letter-spacing: 1px; }
@@ -30,11 +51,9 @@ body{background: var(--bg); display: flex; flex-direction: column; height: 100vh
 }
 .cs-card:hover { border-color: var(--accent); transform: translateX(5px); background: white; }
 
-/* Grid de Stages */
 .content { flex: 1; padding: 20px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; overflow-x: auto; }
 .stage-column { background: #eaeaef; border-radius: 12px; display: flex; flex-direction: column; min-width: 210px; border: 2px solid transparent; transition: 0.3s; }
 .stage-column.drag-over { border: 2px dashed var(--accent); background: #fde8ea; }
-
 .stage-header { padding: 18px; background: white; border-radius: 12px 12px 0 0; text-align: center; border-bottom: 2px solid var(--bg); }
 .stage-name { font-weight: 700; font-size: 13px; color: #555; margin-bottom: 8px; text-transform: uppercase; }
 .project-count { font-size: 32px; font-weight: 800; color: var(--primary); line-height: 1; }
@@ -46,7 +65,6 @@ body{background: var(--bg); display: flex; flex-direction: column; height: 100vh
     font-size: 12px; display: flex; justify-content: space-between; align-items: center;
     animation: fadeIn 0.3s ease;
 }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .remove-btn { cursor: pointer; font-size: 18px; line-height: 1; opacity: 0.7; }
 .remove-btn:hover { color: var(--accent); opacity: 1; }
 
@@ -55,6 +73,16 @@ body{background: var(--bg); display: flex; flex-direction: column; height: 100vh
 </style>
 </head>
 <body>
+
+<div id="login-overlay">
+    <div class="login-box">
+        <span class="logo">ORBIDI</span>
+        <h2 style="font-size: 14px; margin-bottom: 20px; opacity: 0.8;">Acceso Restringido CS</h2>
+        <input type="password" id="pass-input" placeholder="Contraseña de acceso" onkeypress="if(event.key==='Enter') checkLogin()">
+        <button onclick="checkLogin()">Entrar</button>
+        <p id="login-error">Acceso denegado. Inténtalo de nuevo.</p>
+    </div>
+</div>
 
 <div class="header">
     <div style="display:flex; align-items:center; gap:15px;">
@@ -77,9 +105,6 @@ body{background: var(--bg); display: flex; flex-direction: column; height: 100vh
     <div class="sidebar">
         <h3>Equipo Disponible</h3>
         <div class="cs-list" id="cs-list"></div>
-        <p style="font-size: 10px; color: #bbb; margin-top: 20px; line-height: 1.4;">
-            Mueve a los CS a las columnas para asignar carga de trabajo.
-        </p>
     </div>
     <div class="content" id="stages-container"></div>
 </div>
@@ -88,10 +113,10 @@ body{background: var(--bg); display: flex; flex-direction: column; height: 100vh
 
 <script>
 // --- CONFIGURACIÓN DE SEGURIDAD ---
-const INTERNAL_KEY = "Orbidi-CustomerSuccessTenerife2026";
+const INTERNAL_KEY = "Orbidi-CustomerSuccessTenerife2026"; // Llave para hablar con el servidor
+const WEB_PASSWORD = "CS-Tenerife-2026"; // Contraseña que tú y tu equipo escribiréis para entrar
 
 const CS_TEAM = ["Bruno Ruzic","Elena Chico","José Luis","María Requena",];
-
 const STAGES = [
     {id: 'fdk1', label: 'FDK 1', hs_id: '593899722'}, 
     {id: 'fdk2', label: 'FDK 2', hs_id: '593899724'},
@@ -102,10 +127,37 @@ const STAGES = [
 
 let state = { assignments: {}, counts: {} };
 
+// --- LÓGICA DE ACCESO ---
+function checkLogin() {
+    const input = document.getElementById('pass-input').value;
+    if (input === WEB_PASSWORD) {
+        localStorage.setItem('orbidi_auth', 'true'); // Guardar sesión
+        document.getElementById('login-overlay').style.display = 'none';
+        initApp(); // Arrancar la app
+    } else {
+        document.getElementById('login-error').style.display = 'block';
+    }
+}
+
+// Al cargar la página, ver si ya estaba logueado
+window.onload = () => {
+    if (localStorage.getItem('orbidi_auth') === 'true') {
+        document.getElementById('login-overlay').style.display = 'none';
+        initApp();
+    }
+}
+
+function initApp() {
+    initUI();
+    syncData();
+}
+
+// --- FUNCIONES DE LA APP ---
 function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 
 function initUI() {
     const csList = document.getElementById('cs-list');
+    csList.innerHTML = '';
     CS_TEAM.sort().forEach(name => {
         const div = document.createElement('div');
         div.className = 'cs-card';
@@ -116,6 +168,7 @@ function initUI() {
     });
 
     const container = document.getElementById('stages-container');
+    container.innerHTML = '';
     STAGES.forEach(s => {
         const col = document.createElement('div');
         col.className = 'stage-column';
@@ -141,14 +194,9 @@ function initUI() {
 }
 
 async function assignCS(stageId, name) {
-    if (!CS_TEAM.includes(name)) {
-        console.warn("Intento bloqueado: arrastraste texto no válido ->", name);
-        return;
-    }
-
+    if (!CS_TEAM.includes(name)) return;
     if (!state.assignments[stageId]) state.assignments[stageId] = [];
     if (state.assignments[stageId].includes(name)) return;
-    
     state.assignments[stageId].push(name);
     renderAssignments();
     saveToDB(stageId);
@@ -163,14 +211,9 @@ async function removeCS(stageId, name) {
 function renderAssignments() {
     STAGES.forEach(s => {
         const zone = document.getElementById(`zone-${s.id}`);
+        if(!zone) return;
         zone.innerHTML = '';
         let members = state.assignments[s.id] || [];
-        if (typeof members === 'string') {
-            try { members = JSON.parse(members); } catch(e) { members = []; }
-        }
-        if (!Array.isArray(members)) members = [];
-        state.assignments[s.id] = members;
-
         members.forEach(name => {
             const div = document.createElement('div');
             div.className = 'assigned-cs';
@@ -180,74 +223,49 @@ function renderAssignments() {
     });
 }
 
-function groupByStage(items) {
-  return items.reduce((acc, item) => {
-    const stage = item.properties.hs_pipeline_stage || 'unknown';
-    if (!acc[stage]) acc[stage] = [];
-    acc[stage].push(item);
-    return acc;
-  }, {});
-}
-
 async function saveToDB(stageId) {
     try {
         const res = await fetch('/api/hubspot', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': INTERNAL_KEY // <--- CABECERA DE SEGURIDAD AÑADIDA
-            },
+            headers: { 'Content-Type': 'application/json', 'x-api-key': INTERNAL_KEY },
             body: JSON.stringify({ action: 'saveStageAssignment', stageId: stageId, members: state.assignments[stageId] })
         });
         if(res.ok) {
             document.getElementById('dot-db').className = 'dot active';
             showToast("Guardado en BBDD Vercel");
         }
-    } catch (e) { 
-        document.getElementById('dot-db').className = 'dot error';
-    }
+    } catch (e) { document.getElementById('dot-db').className = 'dot error'; }
 }
 
 async function syncData() {
-    // 1. Cargar Asignaciones de la BBDD (Vercel/Redis)
     try {
         const redisRes = await fetch('/api/hubspot?action=loadAllAssignments', {
-            headers: { 'x-api-key': INTERNAL_KEY } // <--- SEGURIDAD AÑADIDA
+            headers: { 'x-api-key': INTERNAL_KEY }
         });
         if (redisRes.ok) {
             state.assignments = await redisRes.json();
             renderAssignments();
             document.getElementById('dot-db').className = 'dot active';
-        } else { throw new Error(); }
-    } catch (e) { 
-        document.getElementById('dot-db').className = 'dot error'; 
-    }
+        }
+    } catch (e) { document.getElementById('dot-db').className = 'dot error'; }
 
-    // 2. Cargar Proyectos de HubSpot
     try {
         const res = await fetch('/api/hubspot?action=getProjects', {
-            headers: { 'x-api-key': INTERNAL_KEY } // <--- SEGURIDAD AÑADIDA
+            headers: { 'x-api-key': INTERNAL_KEY }
         });
-
         if (!res.ok) throw new Error();
-
         const data = await res.json();
-        const grouped = groupByStage(data.results || []);
-
-        STAGES.forEach(s => {
-            const count = grouped[s.hs_id]?.length || 0;
-            document.getElementById(`count-${s.id}`).textContent = count;
+        const counts = {};
+        (data.results || []).forEach(item => {
+            const st = item.properties.hs_pipeline_stage;
+            counts[st] = (counts[st] || 0) + 1;
         });
-
+        STAGES.forEach(s => {
+            document.getElementById(`count-${s.id}`).textContent = counts[s.hs_id] || 0;
+        });
         document.getElementById('dot-hs').className = 'dot active';
-
-    } catch (e) {
-        document.getElementById('dot-hs').className = 'dot error';
-    }
+    } catch (e) { document.getElementById('dot-hs').className = 'dot error'; }
 }
-
-initUI();
-syncData();
 </script>
 </body>
 </html>
